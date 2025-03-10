@@ -2,7 +2,13 @@ import Link from "next/link";
 import { Mail, User, FileText, Settings, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle,} from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -59,6 +65,7 @@ export default function Dashboard() {
               <p className="text-xs text-muted-foreground">john@example.com</p>
             </div>
           </div>
+          <Link href="/">
           <Button
             variant="outline"
             size="sm"
@@ -67,6 +74,7 @@ export default function Dashboard() {
             <LogOut className="h-4 w-4" />
             Sign Out
           </Button>
+          </Link>
         </div>
       </div>
       <div className="flex flex-1 flex-col">
@@ -209,20 +217,23 @@ Your Name"
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="rounded-md border p-4">
-                    <div className="mb-2 font-medium">
+                    <div className="font-semibold text-gray-800 mb-2">
                       Subject: Meeting Invitation
                     </div>
-                    <div className="prose prose-sm max-w-none">
+                    <div className="text-gray-700 leading-relaxed">
                       <p>Dear John,</p>
+                      <br />
                       <p>
                         I hope this email finds you well. I would like to invite
                         you to our upcoming team meeting scheduled for next
-                        week.
+                        week. 
                       </p>
+                      <br />
                       <p>
                         Please let me know if you can attend, and I will send
                         you the calendar invitation.
                       </p>
+                      <br />
                       <p>
                         Best regards,
                         <br />
