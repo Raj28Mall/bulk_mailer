@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link"
-import { sendData } from "@/lib/api";
+import { fetchData, sendData } from "@/lib/api";
 import { useState, useEffect } from 'react';
 import { Mail, User, FileText, Settings, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -13,9 +13,30 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 
 export default function Dashboard() {
-
+  const [templates, setTemplates]=useState([]);
   const [subject, setSubject]=useState("");
   const [body, setBody]=useState("");
+  const [savingTemplate, setSavingTemplate]=useState(false);
+
+  const fetchTemplates=async()=>{
+    const data=await fetchData("email_template");
+    if(data){
+      console.log("Templates fetched successfully: ", data);
+      setSavingTemplate(false);
+      setTemplates(data);
+    }
+    else{
+      console.error("Error fetching templates initally");
+    }
+  };
+
+  useEffect(()=>{
+    fetchTemplates();
+  },[]);
+
+  useEffect(()=>{
+    fetchTemplates();
+  },[savingTemplate]);
 
   const handleSubjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSubject(e.target.value);
@@ -35,6 +56,7 @@ export default function Dashboard() {
       sendData("email_template", template_data);
       setSubject("");
       setBody("");
+      setSavingTemplate(true);
     }
   }
 
@@ -402,15 +424,18 @@ Your Name`}
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="rounded-md border p-4">
-                    <div className="mb-2 font-medium">Subject: Meeting Invitation</div>
+                    <div className="mb-2 font-semibold">Subject: Meeting Invitation</div>
                     <div className="prose prose-sm max-w-none">
                       <p>Dear John,</p>
+                      <br />
                       <p>
                         I hope this email finds you well. I would like to invite you to our upcoming team meeting
                         scheduled for next week.
                       </p>
+                      <b></b>
                       <p>Please let me know if you can attend, and I will send you the calendar invitation.</p>
                       <p>
+                        <br />
                         Best regards,
                         <br />
                         Your Name

@@ -104,66 +104,7 @@ export default function Templates() {
                     </Button>
                   </CardFooter>
                 </Card>
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle>Monthly Newsletter</CardTitle>
-                    <CardDescription>Last edited: 1 week ago</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-40 rounded-md border bg-muted/40 p-2 text-xs">
-                      <p>Hello [name],</p>
-                      <p className="mt-2">Here&apos;s what&apos;s new this month at [company]...</p>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex justify-between">
-                    <Button variant="ghost" size="sm">
-                      Edit
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      Use
-                    </Button>
-                  </CardFooter>
-                </Card>
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle>Product Update</CardTitle>
-                    <CardDescription>Last edited: 3 days ago</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-40 rounded-md border bg-muted/40 p-2 text-xs">
-                      <p>Hi [name],</p>
-                      <p className="mt-2">We&apos;ve just released some exciting new features...</p>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex justify-between">
-                    <Button variant="ghost" size="sm">
-                      Edit
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      Use
-                    </Button>
-                  </CardFooter>
-                </Card>
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle>Event Invitation</CardTitle>
-                    <CardDescription>Last edited: 5 days ago</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-40 rounded-md border bg-muted/40 p-2 text-xs">
-                      <p>Dear [name],</p>
-                      <p className="mt-2">You&apos;re invited to our upcoming event on [date]...</p>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex justify-between">
-                    <Button variant="ghost" size="sm">
-                      Edit
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      Use
-                    </Button>
-                  </CardFooter>
-                </Card>
+                
                 <Card className="border-dashed">
                   <CardHeader className="pb-3">
                     <CardTitle className="text-muted-foreground">Create New Template</CardTitle>

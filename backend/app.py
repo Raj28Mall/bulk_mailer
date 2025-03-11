@@ -54,7 +54,6 @@ def save_template():
         data = request.json 
         subject = data.get("subject")
         body = data.get("body")
-        print(subject, body, sep=" ")
 
         if not subject or not body:
             return jsonify(error="Please provide both subject and body"), 400
@@ -68,6 +67,15 @@ def save_template():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route("/api/email_template", methods=['GET'])
+def get_templates():
+    try:
+        db, cursor = get_db()
+        cursor.execute("SELECT * FROM templates WHERE user_id=%s", (USER_ID,))
+        templates = cursor.fetchall()
+        return jsonify(templates)
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
