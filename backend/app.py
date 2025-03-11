@@ -1,13 +1,39 @@
-from flask import Flask
+from flask import Flask, request, jsonify, g
+from flask_cors import CORS
 import os
 from dotenv import load_dotenv # type: ignore
 import mysql.connector # type: ignore
-
 app = Flask(__name__)
+CORS(app)
+load_dotenv()
+
+USER_ID=1
+
+def get_db():
+    """Get database connection (create one if not exists)."""
+    if 'db' not in g:
+        g.db = mysql.connector.connect(
+            host=os.getenv("DB_HOST"),
+            user=os.getenv("DB_USER"),
+            password=os.getenv("DB_PASSWORD"),
+            database=os.getenv("DB_NAME")
+        )
+        g.cursor = g.db.cursor()
+    return g.db, g.cursor
+
+@app.teardown_appcontext
+def close_db(exception):
+    """Close the database connection at the end of the request."""
+    db = g.pop('db', None)
+    cursor = g.pop('cursor', None)
+    if cursor:
+        cursor.close()
+    if db:
+        db.close()
 
 @app.route("/")
 def home():
-    return "Hello, Flask!"
+    return "Flask is running!"
 
 @app.route("/about")
 def about():
@@ -15,35 +41,33 @@ def about():
 
 @app.route("/contact")
 def contact():
-    return "Contact us at: contact@example.com"
+    return "Contact me at: rajmall.0206@gmail.com"
 
 @app.route("/user/<name>")
 def greet_user(name):
     return f"Hello, {name}!"
 
-load_dotenv()
+@app.route("/api/email_template", methods=['POST'])
+def save_template():
+    try:
+        db, cursor=get_db()
+        data = request.json 
+        subject = data.get("subject")
+        body = data.get("body")
+        print(subject, body, sep=" ")
 
-db = mysql.connector.connect(
-    host=os.getenv("DB_HOST"),
-    user=os.getenv("DB_USER"),
-    password=os.getenv("DB_PASSWORD"),
-    database=os.getenv("DB_NAME")
-)
-    
-cursor = db.cursor()
-cursor.execute("SHOW TABLES")
+        if not subject or not body:
+            return jsonify(error="Please provide both subject and body"), 400
+        
+        command = "INSERT INTO templates (user_id, subject, body) VALUES (%s, %s, %s)"
+        values = (USER_ID,subject, body)
+        cursor.execute(command, values)
+        db.commit()
 
-tables = cursor.fetchall()
+        return "Template saved successfully!"
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-if tables:
-    print("📌 Tables in the database:")
-    for table in tables:
-        print(f"  - {table[0]}")
-else:
-    print("No tables found in the database.")
-
-cursor.close()
-db.close()
 
 if __name__ == "__main__":
     app.run(debug=True)

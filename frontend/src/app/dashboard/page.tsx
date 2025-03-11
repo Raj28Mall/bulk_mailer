@@ -1,4 +1,7 @@
+"use client";
 import Link from "next/link"
+import { sendData } from "@/lib/api";
+import { useState, useEffect } from 'react';
 import { Mail, User, FileText, Settings, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -10,6 +13,31 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 
 export default function Dashboard() {
+
+  const [subject, setSubject]=useState("");
+  const [body, setBody]=useState("");
+
+  const handleSubjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSubject(e.target.value);
+  };
+
+  const handleBodyChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setBody(e.target.value);
+  };
+
+  const handleSaveTemplate=()=>{
+    if((!subject)||(!body)){
+      alert("Please enter subject and body to save the template");
+    }
+    else{ 
+      alert('Template saved!\nSubject: ' + subject + '\nBody: ' + body);
+      const template_data={"subject":subject, "body":body};
+      sendData("email_template", template_data);
+      setSubject("");
+      setBody("");
+    }
+  }
+
   return (
     <div className="flex min-h-screen">
       <div className="hidden w-64 flex-col border-r bg-muted/40 md:flex">
@@ -86,23 +114,24 @@ export default function Dashboard() {
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
                     <Label htmlFor="subject">Subject</Label>
-                    <Input id="subject" placeholder="Enter email subject" />
+                    <Input id="subject" placeholder="Enter email subject" value={subject} onChange={handleSubjectChange}/>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="template">Email Body</Label>
                     <Textarea
-                      id="template"
-                      placeholder="Dear [name],
+  id="template" onChange={handleBodyChange} value={body}
+  placeholder={`Dear [name],
 
 Write your email content here. You can use [name] as a placeholder that will be replaced with each recipient's name.
 
 Best regards,
-Your Name"
-                      className="min-h-[300px]"
-                    />
+Your Name`}
+  className="min-h-[300px]"
+/>
+
                   </div>
                   <div className="flex justify-end">
-                    <Button>Save Template</Button>
+                    <Button onClick={handleSaveTemplate}>Save Template</Button>
                   </div>
                 </CardContent>
               </Card>
