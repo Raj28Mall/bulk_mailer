@@ -1,7 +1,7 @@
 from flask import Flask
 import os
-from dotenv import load_dotenv
-import mysql.connector
+from dotenv import load_dotenv # type: ignore
+import mysql.connector # type: ignore
 
 app = Flask(__name__)
 
