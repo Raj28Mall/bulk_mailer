@@ -51,7 +51,7 @@ INSERT INTO users (sub, email, name, picture)
 VALUES ('abcdefgh', 'rajmall.0206@gmail.com', 'Raj Mall', 'rajukaju');
 
 SELECT * FROM templates;
-DROP TABLE templates;
+TRUNCATE TABLE templates;
 SELECT * FROM users;
 SELECT * FROM users WHERE email = 'rajmall.0206@gmail.com' OR sub = 'abcdefgh';
 

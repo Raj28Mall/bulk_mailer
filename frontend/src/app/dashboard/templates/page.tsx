@@ -1,11 +1,15 @@
+"use client";
 import Link from "next/link"
 import { Mail, User, FileText, Settings, LogOut, Plus, Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useTemplateStore } from "@/store/templateStore";
 
 export default function Templates() {
+  const templates= useTemplateStore((state)=>state.templates);
+
   return (
     <div className="flex min-h-screen">
       <div className="hidden w-64 flex-col border-r bg-muted/40 md:flex">

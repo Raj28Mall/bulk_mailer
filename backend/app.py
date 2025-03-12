@@ -3,6 +3,7 @@ from flask_cors import CORS
 import os
 from dotenv import load_dotenv # type: ignore
 import mysql.connector # type: ignore
+
 app = Flask(__name__)
 CORS(app)
 load_dotenv()

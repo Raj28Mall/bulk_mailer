@@ -20,8 +20,6 @@ export const fetchData= async(source: string)=>{
     const url=`${BASE_URL}/${source}`;
     try{
         const response=await axios.get(url);
-        //some processing required
-        console.log("GET Response:", response.data);
         return response.data;
     } catch(error){
         console.error("Error fetching data: ", error);

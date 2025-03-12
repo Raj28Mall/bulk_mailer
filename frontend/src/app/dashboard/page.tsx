@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link"
 import { fetchData, sendData } from "@/lib/api";
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
 import { Mail, User, FileText, Settings, LogOut } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -11,32 +11,14 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
+import { useTemplateStore } from "@/store/templateStore";
 
 export default function Dashboard() {
-  const [templates, setTemplates]=useState([]);
-  const [subject, setSubject]=useState("");
-  const [body, setBody]=useState("");
-  const [savingTemplate, setSavingTemplate]=useState(false);
+  const templates = useTemplateStore((state) => state.templates);
+  const setTemplates = useTemplateStore((state) => state.setTemplates);
 
-  const fetchTemplates=async()=>{
-    const data=await fetchData("email_template");
-    if(data){
-      console.log("Templates fetched successfully: ", data);
-      setSavingTemplate(false);
-      setTemplates(data);
-    }
-    else{
-      console.error("Error fetching templates initally");
-    }
-  };
-
-  useEffect(()=>{
-    fetchTemplates();
-  },[]);
-
-  useEffect(()=>{
-    fetchTemplates();
-  },[savingTemplate]);
+  const [subject, setSubject] = useState("");
+  const [body, setBody] = useState("");
 
   const handleSubjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSubject(e.target.value);
@@ -45,20 +27,34 @@ export default function Dashboard() {
   const handleBodyChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setBody(e.target.value);
   };
+  
+  const fetchTemplates = async () => {
+    const data = await fetchData("email_template");
+    if (data) {
+      setTemplates(data); 
+    } else {
+      console.error("Error fetching templates initially");
+    }
+  };
 
-  const handleSaveTemplate=()=>{
-    if((!subject)||(!body)){
+  useEffect(() => {
+    fetchTemplates();
+  }, []); 
+
+  const handleSaveTemplate = async () => {
+    if (!subject || !body) {
       alert("Please enter subject and body to save the template");
+      return;
     }
-    else{ 
-      alert('Template saved!\nSubject: ' + subject + '\nBody: ' + body);
-      const template_data={"subject":subject, "body":body};
-      sendData("email_template", template_data);
-      setSubject("");
-      setBody("");
-      setSavingTemplate(true);
-    }
-  }
+
+    alert(`Template saved!\nSubject: ${subject}\nBody: ${body}`);
+    const template_data = { subject, body };
+
+    await sendData("email_template", template_data);
+    fetchTemplates();
+    setSubject("");
+    setBody("");
+  };
 
   return (
     <div className="flex min-h-screen">
