@@ -133,7 +133,7 @@ export default function Templates() {
                       <Button variant="ghost" size="sm">
                         Edit
                       </Button>
-                      <Button variant="ghost" size="sm">
+                      <Button size="sm">
                         Use
                       </Button>
                     </CardFooter>

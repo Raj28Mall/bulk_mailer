@@ -62,13 +62,15 @@ export default function Features() {
               <div className="space-y-4">
                 <div className="font-medium">Email Preview</div>
                 <div className="rounded-md border bg-background p-4">
-                  <div className="mb-2 font-medium">Subject: Your Custom Report is Ready</div>
+                  <div className="mb-2 font-semibold">Subject: Your Custom Report is Ready</div>
                   <div className="prose prose-sm max-w-none">
                     <p>Dear [name],</p>
+                    <br />
                     <p>
                       Your custom report for [company] is now ready to view. We&apos;ve analyzed your data and prepared some
                       insights that we think you&apos;ll find valuable.
                     </p>
+                    <br />
                     <p>
                       Best regards,
                       <br />
