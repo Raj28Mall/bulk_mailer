@@ -39,7 +39,6 @@ export default function Templates() {
     body: template[3],
     last_date: handleLastEdited(template[4]),
   }));
-  console.log("Formatted templates: ", templates);
 
   return (
     <div className="flex min-h-screen">

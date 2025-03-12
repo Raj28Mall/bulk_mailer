@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 
 interface Template {
   id: number | string;
@@ -13,7 +14,14 @@ interface TemplateStore {
   setTemplates: (templates: Template[]) => void;
 }
 
-export const useTemplateStore = create<TemplateStore>((set) => ({
-  templates: [],
-  setTemplates: (templates) => set({ templates }),
-}));
+export const useTemplateStore = create<TemplateStore>()(
+    persist(
+      (set) => ({
+        templates: [],
+        setTemplates: (templates) => set({ templates }),
+      }),
+      {
+        name: "template-storage",
+      }
+    )
+  );
