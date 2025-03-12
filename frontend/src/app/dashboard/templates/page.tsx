@@ -105,9 +105,11 @@ export default function Templates() {
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input type="search" placeholder="Search templates..." className="w-[200px] pl-8 md:w-[300px]" />
             </div>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" /> New Template
-            </Button>
+            <Link href='/dashboard'>
+              <Button>
+                <Plus className="mr-2 h-4 w-4" /> New Template
+              </Button>
+            </Link>
           </div>
         </header>
         <main className="flex-1 overflow-auto p-6">
@@ -126,7 +128,7 @@ export default function Templates() {
                     </CardHeader>
                     <CardContent>
                       <div className="h-40 rounded-md border bg-muted/40 p-2 text-xs">
-                        <p>{template.body}</p>
+                        <pre>{template.body}</pre>
                       </div>
                     </CardContent>
                     <CardFooter className="flex justify-between">
@@ -145,10 +147,12 @@ export default function Templates() {
                     <CardTitle className="text-muted-foreground">Create New Template</CardTitle>
                   </CardHeader>
                   <CardContent className="flex h-40 items-center justify-center">
+                    <Link href='/dashboard'>
                     <Button variant="ghost" size="icon" className="h-20 w-20 rounded-full">
                       <Plus className="h-10 w-10 text-muted-foreground" />
                       <span className="sr-only">Create new template</span>
                     </Button>
+                    </Link>
                   </CardContent>
                 </Card>
               </div>
