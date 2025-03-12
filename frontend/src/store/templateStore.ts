@@ -4,6 +4,7 @@ import { persist } from "zustand/middleware";
 interface Template {
   id: number | string;
   user_id: number | string;
+  name:string;
   subject: string;
   body: string;
   created_at: string;

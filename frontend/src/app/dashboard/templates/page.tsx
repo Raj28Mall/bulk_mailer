@@ -10,11 +10,13 @@ import { useTemplateStore } from "@/store/templateStore";
 interface Template{
   id: number | string;
   subject: string;
+  name:string;
   body: string;
   last_date: string;
 }
 
 export default function Templates() {
+  
   function handleLastEdited(dateString: string): string {
     const date = new Date(dateString); 
     date.setMinutes(date.getMinutes() - 330); //Adjusting for IST times
@@ -36,9 +38,11 @@ export default function Templates() {
   const templates:Template[] = rawTemplates.map(template => ({
     id: template[0],
     subject: template[2],
-    body: template[3],
-    last_date: handleLastEdited(template[4]),
+    body: template[4],
+    name: template[3],
+    last_date: handleLastEdited(template[5]),
   }));
+  console.log(templates);
 
   return (
     <div className="flex min-h-screen">
@@ -123,12 +127,16 @@ export default function Templates() {
                 {templates.map((template) => (
                   <Card key={template.id}>
                     <CardHeader className="pb-3">
-                      <CardTitle>{template.subject}</CardTitle>
+                      <CardTitle>{template.name}</CardTitle>
                       <CardDescription>Last edited: {template.last_date}</CardDescription>
                     </CardHeader>
                     <CardContent>
                       <div className="h-40 rounded-md border bg-muted/40 p-2 text-xs">
-                        <pre>{template.body}</pre>
+                        <pre className="h-full w-full overflow-y-auto break-words whitespace-pre-wrap">
+                          <h3 className="font-semibold text-sm">{template.subject}</h3>
+                          <br />
+                          {template.body}
+                        </pre>
                       </div>
                     </CardContent>
                     <CardFooter className="flex justify-between">

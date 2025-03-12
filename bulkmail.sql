@@ -12,6 +12,7 @@ CREATE TABLE templates(
 	id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT, 
     subject VARCHAR(255),
+    name VARCHAR(255) NOT NULL,
     body TEXT, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -52,9 +53,10 @@ VALUES ('abcdefgh', 'rajmall.0206@gmail.com', 'Raj Mall', 'rajukaju');
 
 SELECT * FROM templates;
 TRUNCATE TABLE templates;
+DROP TABLE templates;
 SELECT * FROM users;
 SELECT * FROM users WHERE email = 'rajmall.0206@gmail.com' OR sub = 'abcdefgh';
 
 
 SHOW WARNINGS;
-DESC users;
+DESC templates;

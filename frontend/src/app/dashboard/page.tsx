@@ -2,10 +2,12 @@
 import Link from "next/link"
 import { fetchData, sendData } from "@/lib/api";
 import { useEffect, useState } from "react";
-import { Mail, User, FileText, Settings, LogOut } from "lucide-react"
+import { Mail, User, FileText, Settings, LogOut, Save, FileDown } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose} from "@/components/ui/dialog"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator,} from "@/components/ui/dropdown-menu"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -14,11 +16,28 @@ import { Badge } from "@/components/ui/badge"
 import { useTemplateStore } from "@/store/templateStore";
 
 export default function Dashboard() {
+  const [templateName, setTemplateName]= useState("");
   const templates = useTemplateStore((state) => state.templates);
   const setTemplates = useTemplateStore((state) => state.setTemplates);
-
   const [subject, setSubject] = useState("");
   const [body, setBody] = useState("");
+
+  function handleLastEdited(dateString: string): string {
+    const date = new Date(dateString); 
+    date.setMinutes(date.getMinutes() - 330); //Adjusting for IST times
+  
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  
+    if (diffInSeconds < 60) return "Just now";
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`;
+    if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 604800)} weeks ago`;
+    if (diffInSeconds < 31536000) return `${Math.floor(diffInSeconds / 2592000)} months ago`;
+  
+    return `${Math.floor(diffInSeconds / 31536000)} years ago`;
+  }
 
   const handleSubjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSubject(e.target.value);
@@ -26,6 +45,10 @@ export default function Dashboard() {
 
   const handleBodyChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setBody(e.target.value);
+  };
+
+  const handleTemplateNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTemplateName(e.target.value);
   };
   
   const fetchTemplates = async () => {
@@ -48,12 +71,13 @@ export default function Dashboard() {
     }
 
     alert(`Template saved!\nSubject: ${subject}\nBody: ${body}`);
-    const template_data = { subject, body };
-
+    const template_data = { "subject":subject, "body":body, "name":templateName };
+    console.log(template_data);
     await sendData("email_template", template_data);
     fetchTemplates();
     setSubject("");
     setBody("");
+    setTemplateName("");
   };
 
   return (
@@ -123,11 +147,54 @@ export default function Dashboard() {
             </TabsList>
             <TabsContent value="compose" className="space-y-4 pt-4">
               <Card>
-                <CardHeader>
-                  <CardTitle>Email Template</CardTitle>
-                  <CardDescription>
-                    Create your email template with placeholders like [name] for personalization.
-                  </CardDescription>
+                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                  <div>
+                    <CardTitle>Email Template</CardTitle>
+                    <CardDescription>
+                      Create your email template with placeholders like [name] for personalization.
+                    </CardDescription>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" size="sm">
+                          <FileDown className="mr-2 h-4 w-4" />
+                          Load Template
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Load Template</DialogTitle>
+                          <DialogDescription>Choose a template to load into the editor.</DialogDescription>
+                        </DialogHeader>
+                        <div className="grid gap-4 py-4 ">
+                          <div className="grid grid-cols-1 gap-4 ">
+                            <div className="flex flex-col items-center justify-between rounded-md p-3 hover:bg-muted/50 cursor-pointer max-h-80 overflow-y-scroll">
+                            {templates.map((template)=>{
+                              return(
+                                <div className="flex items-center justify-between rounded-md border p-3 w-full mb-2" key={template[0]}>
+                                  <div className="space-y-2">
+                                    <h4 className="font-medium">{template[3]}</h4>
+                                    <p className="text-sm text-muted-foreground">Last edited: {handleLastEdited(template[5])}</p>
+                                  </div>
+                                  <Button size="sm" onClick={()=>{
+                                    setSubject(template[2]);
+                                    setBody(template[4]);
+                                  }}>Use</Button>
+                                </div>
+                              )
+                            })}
+                            </div>
+                          </div>
+                        </div>
+                        <DialogFooter>
+                          <DialogClose asChild>
+                            <Button variant="outline">Cancel</Button>
+                          </DialogClose>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-2">
@@ -137,21 +204,62 @@ export default function Dashboard() {
                   <div className="space-y-2">
                     <Label htmlFor="template">Email Body</Label>
                     <Textarea
-  id="template" onChange={handleBodyChange} value={body}
-  placeholder={`Dear [name],
+                      id="template" value={body} onChange={handleBodyChange}
+                      placeholder="Dear [name],
 
 Write your email content here. You can use [name] as a placeholder that will be replaced with each recipient's name.
 
 Best regards,
-Your Name`}
-  className="min-h-[300px]"
-/>
-
-                  </div>
-                  <div className="flex justify-end">
-                    <Button onClick={handleSaveTemplate}>Save Template</Button>
+Your Name"
+                      className="min-h-[300px]"
+                    />
                   </div>
                 </CardContent>
+                <CardFooter className="flex justify-end gap-2">
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <Button variant="outline">
+                        <Save className="mr-2 h-4 w-4" />
+                        Save Template
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>Save Template</DialogTitle>
+                        <DialogDescription>Save this template for future use.</DialogDescription>
+                      </DialogHeader>
+                      <div className="grid gap-4 py-4">
+                        <div className="grid grid-cols-4 items-center gap-4">
+                          <Label htmlFor="template-name" className="text-right">
+                            Template Name
+                          </Label>
+                          <Input id="template-name" value={templateName} placeholder="Leave empty if you just want it to be the subject" className="col-span-3" onChange={handleTemplateNameChange}/>
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <DialogClose asChild>
+                          <Button variant="outline">Cancel</Button>
+                        </DialogClose>
+                        <DialogClose asChild>
+                          <Button onClick={handleSaveTemplate}>Save Template</Button>
+                        </DialogClose>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button>Continue</Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onSelect={() => {}}>Continue to Recipients</DropdownMenuItem>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem onSelect={() => {}}>
+                        <Save className="mr-2 h-4 w-4" />
+                        Save and Continue
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                </CardFooter>
               </Card>
             </TabsContent>
             <TabsContent value="recipients" className="space-y-4 pt-4">
@@ -428,10 +536,9 @@ Your Name`}
                         I hope this email finds you well. I would like to invite you to our upcoming team meeting
                         scheduled for next week.
                       </p>
-                      <b></b>
                       <p>Please let me know if you can attend, and I will send you the calendar invitation.</p>
+                      <br />
                       <p>
-                        <br />
                         Best regards,
                         <br />
                         Your Name

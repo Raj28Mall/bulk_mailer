@@ -55,12 +55,16 @@ def save_template():
         data = request.json 
         subject = data.get("subject")
         body = data.get("body")
+        name=data.get("name")
 
         if not subject or not body:
             return jsonify(error="Please provide both subject and body"), 400
+
+        if not name:
+            name=subject
         
-        command = "INSERT INTO templates (user_id, subject, body) VALUES (%s, %s, %s)"
-        values = (USER_ID,subject, body)
+        command = "INSERT INTO templates (user_id, name,  subject, body) VALUES (%s, %s, %s, %s)"
+        values = (USER_ID, name, subject, body)
         cursor.execute(command, values)
         db.commit()
 

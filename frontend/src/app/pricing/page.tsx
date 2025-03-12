@@ -46,7 +46,7 @@ export default function Pricing() {
               </CardHeader>
               <CardContent>
                 <p className="text-center text-lg font-medium mb-6">
-                  🎉 Totally FREE during our early access period! 🎉
+                  🎉 Totally FREE for Now! 🎉
                 </p>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-2">
