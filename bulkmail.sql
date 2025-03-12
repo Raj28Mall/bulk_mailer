@@ -1,6 +1,5 @@
 USE bulkmail_db;
 
-
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     sub VARCHAR(255) UNIQUE NOT NULL,
@@ -48,3 +47,14 @@ CREATE TABLE contact_list_mapping (
     FOREIGN KEY (list_id) REFERENCES lists(id) ON DELETE CASCADE
 );
 
+INSERT INTO users (sub, email, name, picture) 
+VALUES ('abcdefgh', 'rajmall.0206@gmail.com', 'Raj Mall', 'rajukaju');
+
+SELECT * FROM templates;
+DROP TABLE templates;
+SELECT * FROM users;
+SELECT * FROM users WHERE email = 'rajmall.0206@gmail.com' OR sub = 'abcdefgh';
+
+
+SHOW WARNINGS;
+DESC users;
