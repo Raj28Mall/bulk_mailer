@@ -7,8 +7,39 @@ import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useTemplateStore } from "@/store/templateStore";
 
+interface Template{
+  id: number | string;
+  subject: string;
+  body: string;
+  last_date: string;
+}
+
 export default function Templates() {
-  const templates= useTemplateStore((state)=>state.templates);
+  function handleLastEdited(dateString: string): string {
+    const date = new Date(dateString); 
+    date.setMinutes(date.getMinutes() - 330); //Adjusting for IST times
+  
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  
+    if (diffInSeconds < 60) return "Just now";
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`;
+    if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 604800)} weeks ago`;
+    if (diffInSeconds < 31536000) return `${Math.floor(diffInSeconds / 2592000)} months ago`;
+  
+    return `${Math.floor(diffInSeconds / 31536000)} years ago`;
+  }
+
+  const rawTemplates= useTemplateStore((state)=>state.templates);
+  const templates:Template[] = rawTemplates.map(template => ({
+    id: template[0],
+    subject: template[2],
+    body: template[3],
+    last_date: handleLastEdited(template[4]),
+  }));
+  console.log("Formatted templates: ", templates);
 
   return (
     <div className="flex min-h-screen">
@@ -88,26 +119,27 @@ export default function Templates() {
             </TabsList>
             <TabsContent value="my-templates" className="pt-4">
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle>Welcome Email</CardTitle>
-                    <CardDescription>Last edited: 2 days ago</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-40 rounded-md border bg-muted/40 p-2 text-xs">
-                      <p>Dear [name],</p>
-                      <p className="mt-2">Welcome to our platform! We&apos;re excited to have you on board...</p>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex justify-between">
-                    <Button variant="ghost" size="sm">
-                      Edit
-                    </Button>
-                    <Button variant="ghost" size="sm">
-                      Use
-                    </Button>
-                  </CardFooter>
-                </Card>
+                {templates.map((template) => (
+                  <Card key={template.id}>
+                    <CardHeader className="pb-3">
+                      <CardTitle>{template.subject}</CardTitle>
+                      <CardDescription>Last edited: {template.last_date}</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="h-40 rounded-md border bg-muted/40 p-2 text-xs">
+                        <p>{template.body}</p>
+                      </div>
+                    </CardContent>
+                    <CardFooter className="flex justify-between">
+                      <Button variant="ghost" size="sm">
+                        Edit
+                      </Button>
+                      <Button variant="ghost" size="sm">
+                        Use
+                      </Button>
+                    </CardFooter>
+                  </Card>
+                ))}
                 
                 <Card className="border-dashed">
                   <CardHeader className="pb-3">
