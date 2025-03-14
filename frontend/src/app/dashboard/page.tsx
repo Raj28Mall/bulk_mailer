@@ -216,12 +216,12 @@ export default function Dashboard() {
                     <Label htmlFor="template">Email Body</Label>
                     <Textarea
                       id="template" value={body} onChange={handleBodyChange}
-                      placeholder="Dear [name],
-
+                      placeholder={`Dear [name],
+ 
 Write your email content here. You can use [name] as a placeholder that will be replaced with each recipient's name.
 
 Best regards,
-Your Name"
+Your Name`}
                       className="min-h-[300px]"
                     />
                   </div>

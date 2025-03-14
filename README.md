@@ -7,12 +7,8 @@
 
 
 VERCEL PROMPT:
-1. Add a general section in the contact section (for people who dont belong to any company per se)
-5. import and export dialog support for uploading CSVs
-2. U can remove the filter and All contacts on the contacts page
-3. Dialog support for template saved, deleted
-4. Coming soon for professional templates
-6.
+1. Update preview and send page
+2. Update features page
 
 
 TEMPLATE FIXES:
