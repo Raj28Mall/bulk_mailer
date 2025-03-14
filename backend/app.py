@@ -5,7 +5,7 @@ from dotenv import load_dotenv # type: ignore
 import mysql.connector # type: ignore
 
 app = Flask(__name__)
-CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
+CORS(app, resources={r"/api/*": {"origins": r"http://localhost:\d+"}}, supports_credentials=True)
 load_dotenv()
 
 USER_ID=1

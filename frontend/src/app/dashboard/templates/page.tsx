@@ -9,7 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useTemplateStore } from "@/store/templateStore";
 import { fetchData, deleteData } from "@/lib/api";  
 import { useState, useEffect } from 'react';
-
+import toast from "react-hot-toast";
 
 interface Template{
   id: number;
@@ -32,7 +32,7 @@ export default function Templates() {
   const setTemplates = useTemplateStore((state) => state.setTemplates);
   const deleteTemplate = useTemplateStore((state) => state.deleteTemplate);
 
-  const fetchTemplates = async () => {
+  const fetchDBTemplate = async () => {
     const data = await fetchData("email_template");
     if (data) {
       setTemplates(data); 
@@ -41,8 +41,52 @@ export default function Templates() {
     }
   };
 
+  const deleteDBTemplate = async (id: number) => {
+    try {
+      const response = await deleteData('email_template', id);
+      
+      if (response && response.data && response.data.success) {  
+        deleteTemplate(id);
+        toast.success("Template deleted successfully!", {
+          duration: 2000,
+          style: {
+            border: '1px solid #F97316', 
+            padding: '16px',
+            color: '#F97316', 
+            background: '#FFF7ED', 
+          },
+          iconTheme: {
+            primary: '#F97316', 
+            secondary: '#FFF7ED', 
+          },
+        });
+        
+  
+        await fetchDBTemplate();
+      } else {
+        throw new Error("Failed to delete template");
+      }
+    } catch (error) {
+      console.error("Error deleting template:", error);
+      toast.error("Failed to delete template!", {
+        duration: 2000,
+        style: {
+          border: '1px solid #DC2626',
+          padding: '16px',
+          color: '#DC2626', 
+          background: '#FEF2F2',
+        },
+        iconTheme: {
+          primary: '#DC2626', 
+          secondary: '#FEF2F2', 
+        },
+      });
+    }
+  };
+  
+
   useEffect(() => {
-    fetchTemplates();
+    fetchDBTemplate();
   }, []); 
 
   const templates:Template[] = rawTemplates.map(template => ({
@@ -55,9 +99,9 @@ export default function Templates() {
 
   const handleDeleteTemplate = async (id: number) => {
     console.log("Received id for template deletion: ",id);
-    await deleteData('email_template', id);
+    deleteDBTemplate(id);
     deleteTemplate(id);
-    await fetchTemplates();
+    await fetchDBTemplate();
   }
 
   function handleLastEdited(dateString: string): string {

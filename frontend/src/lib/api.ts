@@ -32,7 +32,8 @@ export const deleteData= async(source: string, id: number)=>{
     console.log(url);
     try{
         const response=await axios.delete(url);
-        console.log("DELETE Response:", response.data);
+        console.log(response);
+        return response;
     } catch(error){
         console.error("Error deleting data: ", error);
     }
