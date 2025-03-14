@@ -5,19 +5,10 @@ from dotenv import load_dotenv # type: ignore
 import mysql.connector # type: ignore
 
 app = Flask(__name__)
-CORS(app, methods=["GET", "POST", "DELETE", "PUT"])
+CORS(app, resources={r"/api/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)
 load_dotenv()
 
 USER_ID=1
-
-@app.route("/api/templates/<int:id>", methods=['OPTIONS'])
-def options(id):
-    """Handle preflight request manually."""
-    response = jsonify({"message": "CORS preflight successful"})
-    response.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
-    response.headers.add("Access-Control-Allow-Methods", "DELETE, GET, POST, PUT")
-    response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
-    return response, 200
 
 def get_db():
     """Get database connection (create one if not exists)."""
@@ -75,12 +66,12 @@ def get_templates():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-@app.route("/api/templates/<int:id>", methods=['DELETE'])
+@app.route("/api/email_template/<int:id>", methods=['DELETE'])
 def delete_template(id):
     try:
         db, cursor = get_db()
         cursor.execute("DELETE FROM templates WHERE id=%s", (id,))
-        db.commit()  # Ensure changes are committed
+        db.commit()
         return jsonify({"success": True}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

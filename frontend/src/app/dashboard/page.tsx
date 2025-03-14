@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import Link from "next/link"
 import { fetchData, sendData } from "@/lib/api";
+import toast from 'react-hot-toast';
 import { useEffect, useState } from "react";
 import { Mail, User, FileText, Settings, LogOut, Save, FileDown, Upload, Download, AlertCircle} from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -25,7 +27,7 @@ export default function Dashboard() {
 
   function handleLastEdited(dateString: string): string {
     const date = new Date(dateString); 
-    date.setMinutes(date.getMinutes() - 330); //Adjusting for IST times
+    date.setMinutes(date.getMinutes() - 330); //Adjusting for IST times from GMT tims
   
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
@@ -67,17 +69,33 @@ export default function Dashboard() {
 
   const handleSaveTemplate = async () => {
     if (!subject || !body) {
-      alert("Please enter subject and body to save the template");
+      toast.error("Please enter subject and body to save the template");
       return;
     }
-
-    alert(`Template saved!\nSubject: ${subject}\nBody: ${body}`);
-    const template_data = { "subject":subject, "body":body, "name":templateName };
-    await sendData("email_template", template_data);
-    fetchTemplates();
-    setSubject("");
-    setBody("");
-    setTemplateName("");
+  
+    const template_data = { "subject": subject, "body": body, "name": templateName };
+    try {
+      await sendData("email_template", template_data);
+      fetchTemplates();
+      setSubject("");
+      setBody("");
+      setTemplateName("");
+      toast.success("Template saved successfully!", {
+        duration: 2000,
+        style: {
+          border: '1px solid #4CAF50',
+          padding: '16px',
+          color: '#4CAF50',
+          background: '#f0fdf4',
+        },
+        iconTheme: {
+          primary: '#4CAF50',
+          secondary: '#f0fdf4',
+        },
+      });
+    } catch (error) {
+      toast.error("Failed to save template. Please try again.");
+    }
   };
 
   return (

@@ -7,7 +7,9 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useTemplateStore } from "@/store/templateStore";
-import { deleteData } from "@/lib/api";
+import { fetchData, deleteData } from "@/lib/api";  
+import { useState, useEffect } from 'react';
+
 
 interface Template{
   id: number;
@@ -26,9 +28,36 @@ interface proTemplate{
 }
 
 export default function Templates() {
+  const rawTemplates= useTemplateStore((state)=>state.templates);
+  const setTemplates = useTemplateStore((state) => state.setTemplates);
+  const deleteTemplate = useTemplateStore((state) => state.deleteTemplate);
+
+  const fetchTemplates = async () => {
+    const data = await fetchData("email_template");
+    if (data) {
+      setTemplates(data); 
+    } else {
+      console.error("Error fetching templates initially");
+    }
+  };
+
+  useEffect(() => {
+    fetchTemplates();
+  }, []); 
+
+  const templates:Template[] = rawTemplates.map(template => ({
+    id: template[0],
+    subject: template[2],
+    body: template[4],
+    name: template[3],
+    last_date: handleLastEdited(template[5]),
+  }));
+
   const handleDeleteTemplate = async (id: number) => {
     console.log("Received id for template deletion: ",id);
-    await deleteData('templates', id);
+    await deleteData('email_template', id);
+    deleteTemplate(id);
+    await fetchTemplates();
   }
 
   function handleLastEdited(dateString: string): string {
@@ -48,14 +77,6 @@ export default function Templates() {
     return `${Math.floor(diffInSeconds / 31536000)} years ago`;
   }
 
-  const rawTemplates= useTemplateStore((state)=>state.templates);
-  const templates:Template[] = rawTemplates.map(template => ({
-    id: template[0],
-    subject: template[2],
-    body: template[4],
-    name: template[3],
-    last_date: handleLastEdited(template[5]),
-  }));
 
   const professionalTemplates:proTemplate[]= [
     {

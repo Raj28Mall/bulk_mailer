@@ -1,28 +1,24 @@
 import { create } from "zustand";
-import { persist } from "zustand/middleware";
 
 interface Template {
-  id: number | string;
-  user_id: number | string;
-  name:string;
+  id: number;
   subject: string;
+  name: string;
   body: string;
-  created_at: string;
+  last_date: string;
 }
 
 interface TemplateStore {
   templates: Template[];
   setTemplates: (templates: Template[]) => void;
+  deleteTemplate: (id: number) => void;
 }
 
-export const useTemplateStore = create<TemplateStore>()(
-    persist(
-      (set) => ({
-        templates: [],
-        setTemplates: (templates) => set({ templates }),
-      }),
-      {
-        name: "template-storage",
-      }
-    )
-  );
+export const useTemplateStore = create<TemplateStore>((set) => ({
+  templates: [],
+  setTemplates: (templates) => set({ templates }),
+  deleteTemplate: (id) =>
+    set((state) => ({
+      templates: state.templates.filter((template) => template.id !== id),
+    })),
+}));

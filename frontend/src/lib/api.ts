@@ -29,6 +29,7 @@ export const fetchData= async(source: string)=>{
 
 export const deleteData= async(source: string, id: number)=>{
     const url=`${BASE_URL}/${source}/${id}`;
+    console.log(url);
     try{
         const response=await axios.delete(url);
         console.log("DELETE Response:", response.data);
