@@ -2,7 +2,7 @@
 import Link from "next/link"
 import { fetchData, sendData } from "@/lib/api";
 import { useEffect, useState } from "react";
-import { Mail, User, FileText, Settings, LogOut, Save, FileDown } from "lucide-react"
+import { Mail, User, FileText, Settings, LogOut, Save, FileDown, Upload, Download, AlertCircle} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
@@ -13,6 +13,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
+import { Alert, AlertTitle, AlertDescription,  } from "@/components/ui/alert"
 import { useTemplateStore } from "@/store/templateStore";
 
 export default function Dashboard() {
@@ -93,13 +94,6 @@ export default function Dashboard() {
             <Link href="/dashboard" className="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2 text-primary">
               <Mail className="h-4 w-4" />
               <span>Compose</span>
-            </Link>
-            <Link
-              href="/dashboard/contacts"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground hover:text-foreground"
-            >
-              <User className="h-4 w-4" />
-              <span>Contacts</span>
             </Link>
             <Link
               href="/dashboard/templates"
@@ -262,262 +256,88 @@ Your Name"
               </Card>
             </TabsContent>
             <TabsContent value="recipients" className="space-y-4 pt-4">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recipients</CardTitle>
-                  <CardDescription>Add your recipients or import them from a CSV file.</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex flex-col gap-4">
-                    <div className="rounded-md border p-4">
-                      <h3 className="text-sm font-medium mb-2">Use Contact Lists</h3>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-                        <div className="flex items-center space-x-2">
-                          <Checkbox id="team-list" />
-                          <Label htmlFor="team-list">Team Members (24)</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Checkbox id="clients-list" />
-                          <Label htmlFor="clients-list">Clients (42)</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Checkbox id="partners-list" />
-                          <Label htmlFor="partners-list">Partners (18)</Label>
-                        </div>
-                        <div className="flex items-center space-x-2">
-                          <Checkbox id="executives-list" />
-                          <Label htmlFor="executives-list">Executives (8)</Label>
-                        </div>
-                      </div>
-                      <div className="mt-4 flex items-center justify-between text-sm text-muted-foreground">
-                        <span>2 lists selected</span>
-                        <span>66 recipients total</span>
-                      </div>
-                    </div>
+            <Card className="mb-6">
+            <CardHeader>
+              <CardTitle>Import Contacts</CardTitle>
+              <CardDescription>Upload a CSV file with your contacts to get started.</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Alert>
+                <AlertCircle className="h-4 w-4" />
+                <AlertTitle>CSV Format</AlertTitle>
+                <AlertDescription>Your CSV should have headers: email, name, description (optional)</AlertDescription>
+              </Alert>
 
-                    <div className="flex items-center gap-4">
-                      <Button variant="outline">Import CSV</Button>
-                      <span className="text-sm text-muted-foreground">or add recipients manually</span>
-                    </div>
-                  </div>
+              <div className="grid w-full items-center gap-1.5">
+                <Label htmlFor="csv-file">Upload CSV</Label>
+                <div className="flex items-center gap-2">
+                  <Input id="csv-file" type="file" accept=".csv" className="flex-1" />
+                  <Button>
+                    <Upload className="mr-2 h-4 w-4" />
+                    Import
+                  </Button>
+                </div>
+              </div>
 
-                  <div className="rounded-md border">
-                    <div className="flex items-center justify-between border-b px-4 py-3">
-                      <div className="font-medium">Recipients (68)</div>
-                      <div className="flex gap-2">
-                        <Button variant="outline" size="sm">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="h-4 w-4 mr-1"
-                          >
-                            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
-                            <polyline points="17 21 17 13 7 13 7 21" />
-                            <polyline points="7 3 7 8 15 8" />
-                          </svg>
-                          Save List
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-12 border-b px-4 py-3 font-medium">
-                      <div className="col-span-1">
-                        <Checkbox />
-                      </div>
-                      <div className="col-span-5">Email</div>
-                      <div className="col-span-3">Name</div>
-                      <div className="col-span-2">Source</div>
-                      <div className="col-span-1 text-right">Actions</div>
-                    </div>
-                    <div className="grid grid-cols-12 items-center border-b px-4 py-3">
-                      <div className="col-span-1">
-                        <Checkbox />
-                      </div>
-                      <div className="col-span-5">john@example.com</div>
-                      <div className="col-span-3">John Doe</div>
-                      <div className="col-span-2">
-                        <Badge variant="outline" className="text-xs">
-                          Team Members
-                        </Badge>
-                      </div>
-                      <div className="col-span-1 text-right">
-                        <Button variant="ghost" size="sm">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="h-4 w-4"
-                          >
-                            <path d="M3 6h18" />
-                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                          </svg>
-                          <span className="sr-only">Delete</span>
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-12 items-center border-b px-4 py-3">
-                      <div className="col-span-1">
-                        <Checkbox />
-                      </div>
-                      <div className="col-span-5">jane@example.com</div>
-                      <div className="col-span-3">Jane Smith</div>
-                      <div className="col-span-2">
-                        <Badge variant="outline" className="text-xs">
-                          Clients
-                        </Badge>
-                      </div>
-                      <div className="col-span-1 text-right">
-                        <Button variant="ghost" size="sm">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="h-4 w-4"
-                          >
-                            <path d="M3 6h18" />
-                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                          </svg>
-                          <span className="sr-only">Delete</span>
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-12 items-center border-b px-4 py-3">
-                      <div className="col-span-1">
-                        <Checkbox />
-                      </div>
-                      <div className="col-span-5">robert@example.com</div>
-                      <div className="col-span-3">Robert Williams</div>
-                      <div className="col-span-2">
-                        <Badge variant="outline" className="text-xs">
-                          Executives
-                        </Badge>
-                      </div>
-                      <div className="col-span-1 text-right">
-                        <Button variant="ghost" size="sm">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="h-4 w-4"
-                          >
-                            <path d="M3 6h18" />
-                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                          </svg>
-                          <span className="sr-only">Delete</span>
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-12 items-center border-b px-4 py-3">
-                      <div className="col-span-1">
-                        <Checkbox />
-                      </div>
-                      <div className="col-span-5">michael@example.com</div>
-                      <div className="col-span-3">Michael Chen</div>
-                      <div className="col-span-2">
-                        <Badge variant="outline" className="text-xs">
-                          Team Members
-                        </Badge>
-                      </div>
-                      <div className="col-span-1 text-right">
-                        <Button variant="ghost" size="sm">
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            className="h-4 w-4"
-                          >
-                            <path d="M3 6h18" />
-                            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                          </svg>
-                          <span className="sr-only">Delete</span>
-                        </Button>
-                      </div>
-                    </div>
-                    <div className="grid grid-cols-12 items-center px-4 py-3">
-                      <div className="col-span-1">
-                        <Checkbox />
-                      </div>
-                      <div className="col-span-5">
-                        <Input placeholder="Email" className="h-8" />
-                      </div>
-                      <div className="col-span-3 pl-2">
-                        <Input placeholder="Name" className="h-8" />
-                      </div>
-                      <div className="col-span-2 pl-2">
-                        <Badge variant="outline" className="text-xs">
-                          Manual
-                        </Badge>
-                      </div>
-                      <div className="col-span-1 text-right">
-                        <Button size="sm">Add</Button>
-                      </div>
-                    </div>
-                  </div>
+              <div className="flex items-center justify-between">
+                <Button variant="outline">
+                  <Download className="mr-2 h-4 w-4" />
+                  Download Sample CSV
+                </Button>
+                <Button variant="outline">
+                  <Download className="mr-2 h-4 w-4" />
+                  Export All Contacts
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="text-destructive border-destructive/20 hover:bg-destructive/10"
-                      >
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="0 0 24 24"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="mr-2 h-3.5 w-3.5"
-                        >
-                          <path d="M3 6h18" />
-                          <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6" />
-                          <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2" />
-                        </svg>
-                        Remove Selected
-                      </Button>
-                    </div>
-                    <div className="text-sm text-muted-foreground">Showing 4 of 68 recipients</div>
-                  </div>
-                </CardContent>
-              </Card>
+          <Card>
+            <CardHeader>
+              <CardTitle>Contact Preview</CardTitle>
+              <CardDescription>Preview of your imported contacts.</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="rounded-md border">
+                <div className="grid grid-cols-12 border-b px-4 py-3 font-medium">
+                  <div className="col-span-5">Email</div>
+                  <div className="col-span-4">Name</div>
+                  <div className="col-span-3">Description</div>
+                </div>
+                <div className="grid grid-cols-12 items-center border-b px-4 py-3">
+                  <div className="col-span-5">john@example.com</div>
+                  <div className="col-span-4">John Doe</div>
+                  <div className="col-span-3">Senior Developer</div>
+                </div>
+                <div className="grid grid-cols-12 items-center border-b px-4 py-3">
+                  <div className="col-span-5">jane@example.com</div>
+                  <div className="col-span-4">Jane Smith</div>
+                  <div className="col-span-3">Marketing Lead</div>
+                </div>
+                <div className="grid grid-cols-12 items-center border-b px-4 py-3">
+                  <div className="col-span-5">michael@example.com</div>
+                  <div className="col-span-4">Michael Chen</div>
+                  <div className="col-span-3">UX Designer</div>
+                </div>
+                <div className="grid grid-cols-12 items-center border-b px-4 py-3">
+                  <div className="col-span-5">emily@example.com</div>
+                  <div className="col-span-4">Emily Davis</div>
+                  <div className="col-span-3">Business Analyst</div>
+                </div>
+                <div className="grid grid-cols-12 items-center border-b px-4 py-3">
+                  <div className="col-span-5">robert@example.com</div>
+                  <div className="col-span-4">Robert Williams</div>
+                  <div className="col-span-3">CEO</div>
+                </div>
+                <div className="grid grid-cols-12 items-center px-4 py-3">
+                  <div className="col-span-5">jennifer@example.com</div>
+                  <div className="col-span-4">Jennifer Lee</div>
+                  <div className="col-span-3">Product Manager</div>
+                </div>
+              </div>
+              <div className="mt-4 text-sm text-muted-foreground">Showing 6 of 92 contacts</div>
+            </CardContent>
+          </Card>
             </TabsContent>
             <TabsContent value="preview" className="space-y-4 pt-4">
               <Card>

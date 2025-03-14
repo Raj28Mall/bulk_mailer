@@ -108,13 +108,6 @@ export default function Templates() {
               <span>Compose</span>
             </Link>
             <Link
-              href="/dashboard/contacts"
-              className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground hover:text-foreground"
-            >
-              <User className="h-4 w-4" />
-              <span>Contacts</span>
-            </Link>
-            <Link
               href="/dashboard/templates"
               className="flex items-center gap-3 rounded-lg bg-primary/10 px-3 py-2 text-primary"
             >
