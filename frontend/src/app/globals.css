@@ -124,3 +124,8 @@
     @apply bg-background text-foreground;
   }
 }
+
+pre {
+  font-family: inherit; 
+  font-size: inherit;
+}

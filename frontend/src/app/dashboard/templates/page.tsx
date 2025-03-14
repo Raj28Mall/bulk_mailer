@@ -1,22 +1,36 @@
 "use client";
 import Link from "next/link"
-import { Mail, User, FileText, Settings, LogOut, Plus, Search } from "lucide-react"
+import { Mail, User, FileText, Settings, LogOut, Plus, Search, Trash2, Edit2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useTemplateStore } from "@/store/templateStore";
+import { deleteData } from "@/lib/api";
 
 interface Template{
-  id: number | string;
+  id: number;
   subject: string;
   name:string;
   body: string;
   last_date: string;
 }
 
+interface proTemplate{
+  id: number;
+  subject: string;
+  body: string;
+  header:string;
+  description:string;
+}
+
 export default function Templates() {
-  
+  const handleDeleteTemplate = async (id: number) => {
+    console.log("Received id for template deletion: ",id);
+    await deleteData('templates', id);
+  }
+
   function handleLastEdited(dateString: string): string {
     const date = new Date(dateString); 
     date.setMinutes(date.getMinutes() - 330); //Adjusting for IST times
@@ -42,7 +56,38 @@ export default function Templates() {
     name: template[3],
     last_date: handleLastEdited(template[5]),
   }));
-  console.log(templates);
+
+  const professionalTemplates:proTemplate[]= [
+    {
+      "id": 1,
+      "subject": "Professional Newsletter",
+      "description": "Corporate communication template",
+      "header": "NEWSLETTER",
+      "body": "Hello [name],\nHere are the latest updates from [company]..."
+    },
+    {
+      "id": 2,
+      "subject": "Promotional Offer",
+      "description": "Sales and marketing template",
+      "header": "SPECIAL OFFER",
+      "body": "Hi [name],\nFor a limited time, we're offering [discount]% off..."
+    },
+    {
+      "id": 3,
+      "subject": "Thank You Email",
+      "description": "Customer appreciation template",
+      "header": "THANK YOU",
+      "body": "Dear [name],\nWe wanted to express our sincere thanks for your business..."
+    },
+    {
+      "id": 4,
+      "subject": "Feedback Request",
+      "description": "Customer survey template",
+      "header": "YOUR FEEDBACK",
+      "body": "Hello [name],\nWe value your opinion and would love to hear your thoughts..."
+    }
+  ]
+  
 
   return (
     <div className="flex min-h-screen">
@@ -140,9 +185,27 @@ export default function Templates() {
                       </div>
                     </CardContent>
                     <CardFooter className="flex justify-between">
-                      <Button variant="ghost" size="sm">
-                        Edit
-                      </Button>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm">
+                          Actions
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="start">
+                        <DropdownMenuItem>
+                          <Edit2 className="mr-2 h-6 w-6"/>
+                          <Button className="p-0 m-0" variant={'ghost'}>
+                          Edit
+                          </Button>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem className="text-destructive">
+                          <Trash2 className="mr-2 h-6 w-6" />
+                          <Button onClick={()=>handleDeleteTemplate(template.id)} className="p-0 m-0" variant={'ghost'}>
+                          Delete
+                          </Button>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
                       <Button size="sm">
                         Use
                       </Button>
@@ -167,70 +230,25 @@ export default function Templates() {
             </TabsContent>
             <TabsContent value="gallery" className="pt-4">
               <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-                <Card>
+                {professionalTemplates.map((template)=>{
+                  return(
+                    <Card key={template.id}>
                   <CardHeader className="pb-3">
-                    <CardTitle>Professional Newsletter</CardTitle>
-                    <CardDescription>Corporate communication template</CardDescription>
+                    <CardTitle>{template.subject}</CardTitle>
+                    <CardDescription>{template.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="h-40 rounded-md border bg-muted/40 p-2 text-xs">
-                      <div className="bg-primary/10 p-1 mb-1 text-center text-primary">NEWSLETTER</div>
-                      <p className="mt-1">Hello [name],</p>
-                      <p className="mt-1">Here are the latest updates from [company]...</p>
+                    <div className="h-40 rounded-md border bg-muted/40 p-2 text-xs w-full" >
+                      <div className="bg-primary/10 p-1 mb-1 text-center text-primary">{template.header}</div>
+                      <pre className="mt-1 h-full w-full overflow-y-auto whitespace-pre-wrap">{template.body}</pre>
                     </div>
                   </CardContent>
                   <CardFooter className="flex justify-end">
                     <Button size="sm">Use Template</Button>
                   </CardFooter>
                 </Card>
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle>Promotional Offer</CardTitle>
-                    <CardDescription>Sales and marketing template</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-40 rounded-md border bg-muted/40 p-2 text-xs">
-                      <div className="bg-primary/10 p-1 mb-1 text-center text-primary">SPECIAL OFFER</div>
-                      <p className="mt-1">Hi [name],</p>
-                      <p className="mt-1">For a limited time, we&apos;re offering [discount]% off...</p>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex justify-end">
-                    <Button size="sm">Use Template</Button>
-                  </CardFooter>
-                </Card>
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle>Thank You Email</CardTitle>
-                    <CardDescription>Customer appreciation template</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-40 rounded-md border bg-muted/40 p-2 text-xs">
-                      <div className="bg-primary/10 p-1 mb-1 text-center text-primary">THANK YOU</div>
-                      <p className="mt-1">Dear [name],</p>
-                      <p className="mt-1">We wanted to express our sincere thanks for your business...</p>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex justify-end">
-                    <Button size="sm">Use Template</Button>
-                  </CardFooter>
-                </Card>
-                <Card>
-                  <CardHeader className="pb-3">
-                    <CardTitle>Feedback Request</CardTitle>
-                    <CardDescription>Customer survey template</CardDescription>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="h-40 rounded-md border bg-muted/40 p-2 text-xs">
-                      <div className="bg-primary/10 p-1 mb-1 text-center text-primary">YOUR FEEDBACK</div>
-                      <p className="mt-1">Hello [name],</p>
-                      <p className="mt-1">We value your opinion and would love to hear your thoughts...</p>
-                    </div>
-                  </CardContent>
-                  <CardFooter className="flex justify-end">
-                    <Button size="sm">Use Template</Button>
-                  </CardFooter>
-                </Card>
+                  )
+                })}
               </div>
             </TabsContent>
           </Tabs>

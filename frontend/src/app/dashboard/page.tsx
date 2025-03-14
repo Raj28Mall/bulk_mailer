@@ -72,7 +72,6 @@ export default function Dashboard() {
 
     alert(`Template saved!\nSubject: ${subject}\nBody: ${body}`);
     const template_data = { "subject":subject, "body":body, "name":templateName };
-    console.log(template_data);
     await sendData("email_template", template_data);
     fetchTemplates();
     setSubject("");

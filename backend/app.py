@@ -5,10 +5,19 @@ from dotenv import load_dotenv # type: ignore
 import mysql.connector # type: ignore
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, methods=["GET", "POST", "DELETE", "PUT"])
 load_dotenv()
 
 USER_ID=1
+
+@app.route("/api/templates/<int:id>", methods=['OPTIONS'])
+def options(id):
+    """Handle preflight request manually."""
+    response = jsonify({"message": "CORS preflight successful"})
+    response.headers.add("Access-Control-Allow-Origin", "http://localhost:3000")
+    response.headers.add("Access-Control-Allow-Methods", "DELETE, GET, POST, PUT")
+    response.headers.add("Access-Control-Allow-Headers", "Content-Type, Authorization")
+    return response, 200
 
 def get_db():
     """Get database connection (create one if not exists)."""
@@ -31,22 +40,6 @@ def close_db(exception):
         cursor.close()
     if db:
         db.close()
-
-@app.route("/")
-def home():
-    return "Flask is running!"
-
-@app.route("/about")
-def about():
-    return "This is the About Page."
-
-@app.route("/contact")
-def contact():
-    return "Contact me at: rajmall.0206@gmail.com"
-
-@app.route("/user/<name>")
-def greet_user(name):
-    return f"Hello, {name}!"
 
 @app.route("/api/email_template", methods=['POST'])
 def save_template():
@@ -81,6 +74,18 @@ def get_templates():
         return jsonify(templates)
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+@app.route("/api/templates/<int:id>", methods=['DELETE'])
+def delete_template(id):
+    try:
+        db, cursor = get_db()
+        cursor.execute("DELETE FROM templates WHERE id=%s", (id,))
+        db.commit()  # Ensure changes are committed
+        return jsonify({"success": True}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
