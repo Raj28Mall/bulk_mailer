@@ -16,7 +16,7 @@ VERCEL PROMPT:
 
 
 TEMPLATE FIXES:
-1. Closing save template dialog
+1. Contacts delete option which flushes the whole db
 2. Continue on dashboard homepage
 3. Preview rendering
 4. Edit API

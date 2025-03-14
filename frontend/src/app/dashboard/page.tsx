@@ -27,7 +27,7 @@ export default function Dashboard() {
 
   function handleLastEdited(dateString: string): string {
     const date = new Date(dateString); 
-    date.setMinutes(date.getMinutes() - 330); //Adjusting for IST times
+    date.setMinutes(date.getMinutes() - 330); //Adjusting for IST times from GMT tims
   
     const now = new Date();
     const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
