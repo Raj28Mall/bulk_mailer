@@ -251,13 +251,13 @@ export default function Templates() {
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="start">
                         <DropdownMenuItem>
-                          <Button className="w-full flex space-x-2 justify-start" variant={'ghost'}>
+                          <Button className="w-full h-full flex space-x-2 justify-start" variant={'ghost'}>
                           <Edit2 className="h-6 w-6"/>
                           Edit
                           </Button>
                         </DropdownMenuItem>
                         <DropdownMenuItem className="text-destructive">
-                          <Button onClick={()=>handleDeleteTemplate(template.id)} className="flex space-x-2 justify-start" variant={'ghost'}>
+                          <Button onClick={()=>handleDeleteTemplate(template.id)} className="flex w-full h-full space-x-2 justify-start" variant={'ghost'}>
                           <Trash2 className="h-6 w-6" />
                           Delete
                           </Button>

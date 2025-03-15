@@ -367,14 +367,14 @@ Your Name`}
                   <div className="rounded-md border p-4">
                     <div className="mb-2 font-semibold">Subject: Meeting Invitation</div>
                     <div className="prose prose-sm max-w-none">
-                      <p>Dear John,</p>
                       <br />
+                      <p>Dear John,</p>
                       <p>
                         I hope this email finds you well. I would like to invite you to our upcoming team meeting
                         scheduled for next week.
                       </p>
-                      <p>Please let me know if you can attend, and I will send you the calendar invitation.</p>
                       <br />
+                      <p>Please let me know if you can attend, and I will send you the calendar invitation.</p>
                       <p>
                         Best regards,
                         <br />
@@ -382,51 +382,10 @@ Your Name`}
                       </p>
                     </div>
                   </div>
-                  <div className="rounded-md border p-4">
-                    <div className="mb-2 font-medium">Recipients</div>
-                    <div className="flex flex-wrap gap-2 mb-3">
-                      <Badge variant="secondary" className="flex items-center gap-1">
-                        Team Members
-                        <span className="text-xs ml-1 text-muted-foreground">(24)</span>
-                      </Badge>
-                      <Badge variant="secondary" className="flex items-center gap-1">
-                        Clients
-                        <span className="text-xs ml-1 text-muted-foreground">(42)</span>
-                      </Badge>
-                      <Badge variant="secondary" className="flex items-center gap-1">
-                        Manual Entries
-                        <span className="text-xs ml-1 text-muted-foreground">(2)</span>
-                      </Badge>
-                    </div>
-                    <div className="text-sm">
-                      <div className="flex justify-between py-1 border-b">
-                        <span className="font-medium">Total Recipients</span>
-                        <span className="text-muted-foreground">68 contacts</span>
-                      </div>
-                      <Button variant="link" size="sm" className="px-0 mt-1">
-                        View all recipients
-                      </Button>
-                    </div>
-                  </div>
-                  <div className="rounded-md border p-4">
-                    <div className="mb-2 font-medium">Sending Options</div>
-                    <div className="space-y-2">
-                      <div className="flex items-center space-x-2">
-                        <Checkbox id="track-opens" defaultChecked />
-                        <Label htmlFor="track-opens">Track email opens</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox id="track-clicks" defaultChecked />
-                        <Label htmlFor="track-clicks">Track link clicks</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox id="schedule" />
-                        <Label htmlFor="schedule">Schedule for later</Label>
-                      </div>
-                    </div>
-                  </div>
                   <div className="flex justify-end gap-4">
-                    <Button variant="outline">Send Test Email</Button>
+                    <Button variant="outline">
+                      Send Test Email
+                    </Button>
                     <Button>Send to All Recipients</Button>
                   </div>
                 </CardContent>
