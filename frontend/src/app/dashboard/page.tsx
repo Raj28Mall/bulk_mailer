@@ -4,7 +4,7 @@ import Link from "next/link"
 import { fetchData, sendData } from "@/lib/api";
 import toast from 'react-hot-toast';
 import { useEffect, useState } from "react";
-import { Mail, User, FileText, Settings, LogOut, Save, FileDown, Upload, Download, AlertCircle} from "lucide-react"
+import { Mail, User, FileText, Settings, LogOut, Save, FileDown, Upload, Download, AlertCircle, Check, FileUp, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
@@ -27,32 +27,70 @@ export default function Dashboard() {
   const body = useBodyStore((state) => state.body);
   const setSubject = useSubjectStore((state) => state.setSubject);
   const setBody = useBodyStore((state) => state.setBody);
+  const [file, setFile] = useState<File | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
+  const [uploadSuccess, setUploadSuccess] = useState(false)
+  const [recipients, setRecipients] = useState([
+    { email: "john@example.com", name: "John Doe", description: "Senior Developer" },
+    { email: "jane@example.com", name: "Jane Smith", description: "Marketing Lead" },
+    { email: "michael@example.com", name: "Michael Chen", description: "UX Designer" },
+    { email: "emily@example.com", name: "Emily Davis", description: "Business Analyst" },
+    { email: "robert@example.com", name: "Robert Williams", description: "CEO" },
+    { email: "jennifer@example.com", name: "Jennifer Lee", description: "Product Manager" },
+  ])
 
-  function handleLastEdited(dateString: string): string {
-    const date = new Date(dateString); 
-    date.setMinutes(date.getMinutes() - 330); //Adjusting for IST times from GMT tims
-  
-    const now = new Date();
-    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-  
-    if (diffInSeconds < 60) return "Just now";
-    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
-    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
-    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`;
-    if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 604800)} weeks ago`;
-    if (diffInSeconds < 31536000) return `${Math.floor(diffInSeconds / 2592000)} months ago`;
-  
-    return `${Math.floor(diffInSeconds / 31536000)} years ago`;
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0]
+    if (selectedFile) {
+      setFile(selectedFile)
+      setUploadSuccess(false)
+      e.target.value="";
+    }
   }
 
+  const handleImport = () => {
+    if (!file) return
+
+    setIsUploading(true)
+
+    // Simulate import process
+    setTimeout(() => {
+      setIsUploading(false)
+      setUploadSuccess(true)
+    }, 1000)
+  }
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault()
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    const droppedFile = e.dataTransfer.files?.[0]
+    if (droppedFile && droppedFile.type === "text/csv") {
+      setFile(droppedFile)
+      setUploadSuccess(false)
+    }
+  }
+
+  const handleDownload = () => {
+    const link = document.createElement("a");
+    link.href = "/contacts.csv"; 
+    link.download = "contacts.csv";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  
   const handleSubjectChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSubject(e.target.value);
   };
-
+  
   const handleBodyChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setBody(e.target.value);
   };
-
+  
   const handleTemplateNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTemplateName(e.target.value);
   };
@@ -65,11 +103,11 @@ export default function Dashboard() {
       console.error("Error fetching templates initially");
     }
   };
-
+  
   useEffect(() => {
     fetchTemplates();
   }, []); 
-
+  
   const handleSaveTemplate = async () => {
     if (!subject || !body) {
       toast.error("Please enter subject and body to save the template");
@@ -100,7 +138,23 @@ export default function Dashboard() {
       toast.error("Failed to save template. Please try again.");
     }
   };
-
+  
+  function handleLastEdited(dateString: string): string {
+    const date = new Date(dateString); 
+    date.setMinutes(date.getMinutes() - 330); //Adjusting for IST times from GMT tims
+  
+    const now = new Date();
+    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
+  
+    if (diffInSeconds < 60) return "Just now";
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`;
+    if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 604800)} weeks ago`;
+    if (diffInSeconds < 31536000) return `${Math.floor(diffInSeconds / 2592000)} months ago`;
+  
+    return `${Math.floor(diffInSeconds / 31536000)} years ago`;
+  }
   return (
     <div className="flex min-h-screen">
       <div className="hidden w-64 flex-col border-r bg-muted/40 md:flex">
@@ -265,88 +319,144 @@ Your Name`}
               </Card>
             </TabsContent>
             <TabsContent value="recipients" className="space-y-4 pt-4">
-            <Card className="mb-6">
-            <CardHeader>
-              <CardTitle>Import Contacts</CardTitle>
-              <CardDescription>Upload a CSV file with your contacts to get started.</CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Alert>
-                <AlertCircle className="h-4 w-4" />
-                <AlertTitle>CSV Format</AlertTitle>
-                <AlertDescription>Your CSV should have headers: email, name, description (optional)</AlertDescription>
-              </Alert>
+              <Card>
+                <CardHeader>
+                  <CardTitle>Recipients</CardTitle>
+                  <CardDescription>Import your recipients from a CSV file.</CardDescription>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <Alert>
+                    <AlertCircle className="h-4 w-4" />
+                    <AlertTitle>CSV Format</AlertTitle>
+                    <AlertDescription>
+                      Your CSV should have headers: email, name, description
+                    </AlertDescription>
+                  </Alert>
 
-              <div className="grid w-full items-center gap-1.5">
-                <Label htmlFor="csv-file">Upload CSV</Label>
-                <div className="flex items-center gap-2">
-                  <Input id="csv-file" type="file" accept=".csv" className="flex-1" />
-                  <Button>
-                    <Upload className="mr-2 h-4 w-4" />
-                    Import
-                  </Button>
-                </div>
-              </div>
+                  <div
+                    className={`border-2 border-dashed rounded-lg p-6 transition-colors ${
+                      uploadSuccess ? "bg-green-50 border-green-300" : "border-gray-300 hover:border-primary/50"
+                    }`}
+                    onDragOver={handleDragOver}
+                    onDrop={handleDrop}
+                  >
+                    <div className="flex flex-col items-center justify-center gap-4">
+                      {uploadSuccess ? (
+                        <div className="h-12 w-12 rounded-full bg-green-100 flex items-center justify-center">
+                          <Check className="h-6 w-6 text-green-600" />
+                        </div>
+                      ) : (
+                        <div className="h-12 w-12 rounded-full bg-primary/10 flex items-center justify-center">
+                          <FileUp className="h-6 w-6 text-primary" />
+                        </div>
+                      )}
 
-              <div className="flex items-center justify-between">
-                <Button variant="outline">
-                  <Download className="mr-2 h-4 w-4" />
-                  Download Sample CSV
-                </Button>
-                <Button variant="outline">
-                  <Download className="mr-2 h-4 w-4" />
-                  Export All Contacts
-                </Button>
-              </div>
-            </CardContent>
-          </Card>
+                      <div className="text-center">
+                        {file ? (
+                          <div className="flex flex-col items-center">
+                            <p className="font-medium text-lg">
+                              {uploadSuccess ? "File uploaded successfully!" : "File selected:"}
+                            </p>
+                            <p className="text-sm text-muted-foreground flex items-center gap-2 mt-1">
+                              <FileText className="h-4 w-4" />
+                              {file.name}
+                            </p>
+                          </div>
+                        ) : (
+                          <>
+                            <p className="font-medium text-lg">Drag & drop your CSV file here</p>
+                            <p className="text-sm text-muted-foreground mt-1">or click the button below to browse</p>
+                          </>
+                        )}
+                      </div>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Contact Preview</CardTitle>
-              <CardDescription>Preview of your imported contacts.</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="rounded-md border">
-                <div className="grid grid-cols-12 border-b px-4 py-3 font-medium">
-                  <div className="col-span-5">Email</div>
-                  <div className="col-span-4">Name</div>
-                  <div className="col-span-3">Description</div>
-                </div>
-                <div className="grid grid-cols-12 items-center border-b px-4 py-3">
-                  <div className="col-span-5">john@example.com</div>
-                  <div className="col-span-4">John Doe</div>
-                  <div className="col-span-3">Senior Developer</div>
-                </div>
-                <div className="grid grid-cols-12 items-center border-b px-4 py-3">
-                  <div className="col-span-5">jane@example.com</div>
-                  <div className="col-span-4">Jane Smith</div>
-                  <div className="col-span-3">Marketing Lead</div>
-                </div>
-                <div className="grid grid-cols-12 items-center border-b px-4 py-3">
-                  <div className="col-span-5">michael@example.com</div>
-                  <div className="col-span-4">Michael Chen</div>
-                  <div className="col-span-3">UX Designer</div>
-                </div>
-                <div className="grid grid-cols-12 items-center border-b px-4 py-3">
-                  <div className="col-span-5">emily@example.com</div>
-                  <div className="col-span-4">Emily Davis</div>
-                  <div className="col-span-3">Business Analyst</div>
-                </div>
-                <div className="grid grid-cols-12 items-center border-b px-4 py-3">
-                  <div className="col-span-5">robert@example.com</div>
-                  <div className="col-span-4">Robert Williams</div>
-                  <div className="col-span-3">CEO</div>
-                </div>
-                <div className="grid grid-cols-12 items-center px-4 py-3">
-                  <div className="col-span-5">jennifer@example.com</div>
-                  <div className="col-span-4">Jennifer Lee</div>
-                  <div className="col-span-3">Product Manager</div>
-                </div>
-              </div>
-              <div className="mt-4 text-sm text-muted-foreground">Showing 6 of 92 contacts</div>
-            </CardContent>
-          </Card>
+                      <div className="flex gap-3">
+                        {!uploadSuccess && (
+                          <Label
+                            htmlFor="csv-upload"
+                            className="cursor-pointer inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+                          >
+                            {file ? "Choose Another File" : "Browse Files"}
+                          </Label>
+                        )}
+
+                        <Input
+                          id="csv-upload"
+                          type="file"
+                          accept=".csv"
+                          className="hidden"
+                          onChange={handleFileChange}
+                        />
+
+                        {file && !uploadSuccess && (
+                          <Button onClick={handleImport} disabled={isUploading} className="gap-2 py-5 px-2">
+                            {isUploading ? (
+                              <>Processing...</>
+                            ) : (
+                              <>
+                                <Upload className="h-4 w-4" />
+                                Import Recipients
+                              </>
+                            )}
+                          </Button>
+                        )}
+
+                        {file && (
+                          <Button
+                            variant="outline"
+                            size="icon"
+                            onClick={() => {
+                              setFile(null)
+                              setUploadSuccess(false)
+
+                              const fileInput = document.getElementById("csv-upload") as HTMLInputElement;
+                              if (fileInput) {
+                                fileInput.value = "";
+                              }
+                            }}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between">
+                    <Button onClick={handleDownload}  variant="outline" className="gap-2">
+                      <Download className="h-4 w-4" />
+                      Download Sample CSV
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card>
+                <CardHeader>
+                  <CardTitle>Recipients Preview</CardTitle>
+                  <CardDescription>Preview of your imported recipients.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="rounded-md border">
+                    <div className="grid grid-cols-12 border-b px-4 py-3 font-medium">
+                      <div className="col-span-5">Email</div>
+                      <div className="col-span-4">Name</div>
+                      <div className="col-span-3">Description</div>
+                    </div>
+                    {recipients.map((recipient, index) => (
+                      <div key={index} className="grid grid-cols-12 items-center border-b px-4 py-3">
+                        <div className="col-span-5">{recipient.email}</div>
+                        <div className="col-span-4">{recipient.name}</div>
+                        <div className="col-span-3">{recipient.description}</div>
+                      </div>
+                    ))}
+                  </div>
+                  <div className="mt-4 text-sm text-muted-foreground">Showing {recipients.length} of 68 recipients</div>
+                </CardContent>
+                <CardContent className="flex justify-end">
+                  <Button>Continue to Preview & Send</Button>
+                </CardContent>
+              </Card>
             </TabsContent>
             <TabsContent value="preview" className="space-y-4 pt-4">
               <Card>
@@ -357,8 +467,8 @@ Your Name`}
                 <CardContent className="space-y-4">
                   <div className="rounded-md border p-4">
                     <div className="mb-2 font-semibold">Subject: {subject}</div>
-                    <div className="prose prose-sm max-w-none">
-                    <pre className="mt-1 h-full w-full overflow-y-auto whitespace-pre-wrap">{body}</pre>
+                    <div className="text-sm">
+                    <pre className="mt-1 text-xs h-full w-full overflow-y-auto whitespace-pre-wrap">{body}</pre>
                     </div>
                   </div>
                   <div className="flex justify-end gap-4">
