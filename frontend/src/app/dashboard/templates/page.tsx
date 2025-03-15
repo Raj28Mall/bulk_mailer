@@ -1,6 +1,6 @@
 "use client";
 import Link from "next/link"
-import { Mail, User, FileText, Settings, LogOut, Plus, Search, Trash2, Edit2 } from "lucide-react"
+import { Mail, User, FileText, Settings, LogOut, Plus, Search, Trash2, Edit2, Ghost } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu"
@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useTemplateStore } from "@/store/templateStore";
 import { fetchData, deleteData } from "@/lib/api";  
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useSubjectStore, useBodyStore } from "@/store/emailStore";
 import toast from "react-hot-toast";
 
 interface Template{
@@ -28,6 +29,8 @@ interface proTemplate{
 }
 
 export default function Templates() {
+  const setSubject = useSubjectStore((state) => state.setSubject);
+  const setBody = useBodyStore((state) => state.setBody);
   const rawTemplates= useTemplateStore((state)=>state.templates);
   const setTemplates = useTemplateStore((state) => state.setTemplates);
   const deleteTemplate = useTemplateStore((state) => state.deleteTemplate);
@@ -102,6 +105,11 @@ export default function Templates() {
     deleteDBTemplate(id);
     deleteTemplate(id);
     await fetchDBTemplate();
+  }
+
+  const handleCurrentTemplate=(subject:string, body:string)=>{
+    setSubject(subject);
+    setBody(body);
   }
 
   function handleLastEdited(dateString: string): string {
@@ -243,30 +251,15 @@ export default function Templates() {
                       </div>
                     </CardContent>
                     <CardFooter className="flex justify-between">
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          Actions
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="start">
-                        <DropdownMenuItem>
-                          <Button className="w-full h-full flex space-x-2 justify-start" variant={'ghost'}>
-                          <Edit2 className="h-6 w-6"/>
-                          Edit
-                          </Button>
-                        </DropdownMenuItem>
-                        <DropdownMenuItem className="text-destructive">
-                          <Button onClick={()=>handleDeleteTemplate(template.id)} className="flex w-full h-full space-x-2 justify-start" variant={'ghost'}>
-                          <Trash2 className="h-6 w-6" />
-                          Delete
-                          </Button>
-                        </DropdownMenuItem>
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                      <Button size="sm">
-                        Use
+                      <Button onClick={()=>handleDeleteTemplate(template.id)} className="flex w-fit text-red-500 h-full space-x-2 justify-start" variant={'ghost'}>
+                      <Trash2 className="h-6 w-6" />
+                      Delete
                       </Button>
+                      <Link href={`/dashboard`}>
+                        <Button className="text-sm" onClick={()=>handleCurrentTemplate(template.subject, template.body)} size="sm">
+                          Use
+                        </Button>
+                      </Link>
                     </CardFooter>
                   </Card>
                 ))}
@@ -302,7 +295,11 @@ export default function Templates() {
                     </div>
                   </CardContent>
                   <CardFooter className="flex justify-end">
-                    <Button size="sm">Use Template</Button>
+                      <Link href={`/dashboard`}>
+                        <Button onClick={()=>handleCurrentTemplate(template.subject, template.body)} size="sm">
+                          Use
+                        </Button>
+                      </Link>
                   </CardFooter>
                 </Card>
                   )

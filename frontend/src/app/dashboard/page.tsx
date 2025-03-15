@@ -17,13 +17,16 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Badge } from "@/components/ui/badge"
 import { Alert, AlertTitle, AlertDescription,  } from "@/components/ui/alert"
 import { useTemplateStore } from "@/store/templateStore";
+import { useSubjectStore, useBodyStore } from "@/store/emailStore"
 
 export default function Dashboard() {
   const [templateName, setTemplateName]= useState("");
   const templates = useTemplateStore((state) => state.templates);
   const setTemplates = useTemplateStore((state) => state.setTemplates);
-  const [subject, setSubject] = useState("");
-  const [body, setBody] = useState("");
+  const subject = useSubjectStore((state) => state.subject);
+  const body = useBodyStore((state) => state.body);
+  const setSubject = useSubjectStore((state) => state.setSubject);
+  const setBody = useBodyStore((state) => state.setBody);
 
   function handleLastEdited(dateString: string): string {
     const date = new Date(dateString); 
@@ -257,19 +260,7 @@ Your Name`}
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button>Continue</Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onSelect={() => {}}>Continue to Recipients</DropdownMenuItem>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem onSelect={() => {}}>
-                        <Save className="mr-2 h-4 w-4" />
-                        Save and Continue
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
+                    <Button>Continue</Button> 
                 </CardFooter>
               </Card>
             </TabsContent>
