@@ -356,21 +356,9 @@ Your Name`}
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="rounded-md border p-4">
-                    <div className="mb-2 font-semibold">Subject: Meeting Invitation</div>
+                    <div className="mb-2 font-semibold">Subject: {subject}</div>
                     <div className="prose prose-sm max-w-none">
-                      <br />
-                      <p>Dear John,</p>
-                      <p>
-                        I hope this email finds you well. I would like to invite you to our upcoming team meeting
-                        scheduled for next week.
-                      </p>
-                      <br />
-                      <p>Please let me know if you can attend, and I will send you the calendar invitation.</p>
-                      <p>
-                        Best regards,
-                        <br />
-                        Your Name
-                      </p>
+                    <pre className="mt-1 h-full w-full overflow-y-auto whitespace-pre-wrap">{body}</pre>
                     </div>
                   </div>
                   <div className="flex justify-end gap-4">
