@@ -1,8 +1,10 @@
 from flask import Flask, request, jsonify, g
 from flask_cors import CORS
 import os
+import uuid
 from dotenv import load_dotenv # type: ignore
 import mysql.connector # type: ignore
+from data import getContacts
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": r"http://localhost:\d+"}}, supports_credentials=True)
@@ -76,6 +78,35 @@ def delete_template(id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+@app.route("/api/contacts", methods=["POST"])
+def handleCSV():
+    file=request.files['file']
+    
+    if not file or file.filename == '':
+        return jsonify({'message': 'false', 'error':'No file received'}), 400
+    
+    if file.filename.split('.')[-1] != 'csv':
+        return jsonify({'message':'false', 'error':'Incorrect file format'}), 400
+
+    unique_filename= f"{str(uuid.uuid4())}_{file.filename}"
+    filepath=os.path.join('/tmp', unique_filename)
+    file.save(filepath)
+
+    try:
+        contact_data= getContacts(filepath)
+        # if not contact_data.message:
+        #     return jsonify(contact_data), 400
+        return jsonify({'message':'true'}, {'contacts': contact_data}), 200
+    except Exception as e:
+        return jsonify({'message':'false', 'error':str(e)}), 400
+    finally:
+        if os.path.exists(filepath):
+            os.remove(filepath)
+
+    # try:
+    #     db, cursor=get_db()
+        # have to handle file of CSV into pandas and numpy bla bla bla, so will send to another function in backend, which will check
+        # if the file is valid or not, if valid then will save the contact data in database
 
 
 if __name__ == "__main__":

@@ -6,7 +6,7 @@ const BASE_URL='http://127.0.0.1:5000/api';
 export const sendData = async (source: string, data: Record<string, unknown>) => {
     const url=`${BASE_URL}/${source}`;
     try{
-        const response=await axios.post(url, data, {
+        await axios.post(url, data, {
             headers:{
                 "Content-Type": "application/json",
             },
@@ -38,3 +38,20 @@ export const deleteData= async(source: string, id: number)=>{
         console.error("Error deleting data: ", error);
     }
 }
+
+export const sendContacts= async (source:string, data: File)=>{
+    const url=`${BASE_URL}/${source}`;
+    const fileData=new FormData();
+    fileData.append("file", data);
+    try{
+        const response=await axios.post(url, fileData);
+        return response.data;
+    } catch(error){
+        console.error("Error sending contacts: ", error);
+        return null;
+    }
+}
+
+// http://127.0.0.1:5000/api/contacts
+// sending contacts file
+// returns {message and data}

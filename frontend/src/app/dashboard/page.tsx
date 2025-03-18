@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import Link from "next/link"
-import { fetchData, sendData } from "@/lib/api";
+import { fetchData, sendData, sendContacts } from "@/lib/api";
 import toast from 'react-hot-toast';
 import { useEffect, useState } from "react";
 import { Mail, User, FileText, Settings, LogOut, Save, FileDown, Upload, Download, AlertCircle, Check, FileUp, X } from "lucide-react"
@@ -27,20 +27,13 @@ export default function Dashboard() {
   const body = useBodyStore((state) => state.body);
   const setSubject = useSubjectStore((state) => state.setSubject);
   const setBody = useBodyStore((state) => state.setBody);
-  const [file, setFile] = useState<File | null>(null)
-  const [isUploading, setIsUploading] = useState(false)
-  const [uploadSuccess, setUploadSuccess] = useState(false)
-  const [recipients, setRecipients] = useState([
-    { email: "john@example.com", name: "John Doe", description: "Senior Developer" },
-    { email: "jane@example.com", name: "Jane Smith", description: "Marketing Lead" },
-    { email: "michael@example.com", name: "Michael Chen", description: "UX Designer" },
-    { email: "emily@example.com", name: "Emily Davis", description: "Business Analyst" },
-    { email: "robert@example.com", name: "Robert Williams", description: "CEO" },
-    { email: "jennifer@example.com", name: "Jennifer Lee", description: "Product Manager" },
-  ])
+  const [file, setFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [recipients, setRecipients] = useState([]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = e.target.files?.[0]
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const selectedFile = e.target.files?.[0];
     if (selectedFile) {
       setFile(selectedFile)
       setUploadSuccess(false)
@@ -48,16 +41,18 @@ export default function Dashboard() {
     }
   }
 
-  const handleImport = () => {
-    if (!file) return
+  const handleImport = async () => {
+    if (!file) return;
 
-    setIsUploading(true)
-
-    // Simulate import process
-    setTimeout(() => {
+    setIsUploading(true);
+    const selectedFile = file;
+    const response=await sendContacts("contacts", selectedFile);
+    if(response[0].message==='true'){
+      setRecipients(response[1].contacts);
+      console.log(recipients);
       setIsUploading(false)
       setUploadSuccess(true)
-    }, 1000)
+    }
   }
 
   const handleDragOver = (e: React.DragEvent) => {
@@ -406,9 +401,9 @@ Your Name`}
                             variant="outline"
                             size="icon"
                             onClick={() => {
-                              setFile(null)
-                              setUploadSuccess(false)
-
+                              setFile(null);
+                              setUploadSuccess(false);
+                              setRecipients([]);
                               const fileInput = document.getElementById("csv-upload") as HTMLInputElement;
                               if (fileInput) {
                                 fileInput.value = "";
@@ -443,7 +438,7 @@ Your Name`}
                       <div className="col-span-4">Name</div>
                       <div className="col-span-3">Description</div>
                     </div>
-                    {recipients.map((recipient, index) => (
+                    {recipients.slice(0,30).map((recipient, index) => (
                       <div key={index} className="grid grid-cols-12 items-center border-b px-4 py-3">
                         <div className="col-span-5">{recipient.email}</div>
                         <div className="col-span-4">{recipient.name}</div>
@@ -451,7 +446,7 @@ Your Name`}
                       </div>
                     ))}
                   </div>
-                  <div className="mt-4 text-sm text-muted-foreground">Showing {recipients.length} of 68 recipients</div>
+                  <div className="mt-4 text-sm text-muted-foreground">Showing first {recipients.length>30?30:recipients.length} recipients</div>
                 </CardContent>
                 <CardContent className="flex justify-end">
                   <Button>Continue to Preview & Send</Button>

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import Link from "next/link"
 import { Mail, User, FileText, Settings, LogOut, Plus, Search, Trash2, Edit2, Ghost } from "lucide-react"
@@ -251,15 +252,15 @@ export default function Templates() {
                       </div>
                     </CardContent>
                     <CardFooter className="flex justify-between">
-                      <Button onClick={()=>handleDeleteTemplate(template.id)} className="flex w-fit text-red-500 h-full space-x-2 justify-start" variant={'ghost'}>
-                      <Trash2 className="h-6 w-6" />
-                      Delete
-                      </Button>
                       <Link href={`/dashboard`}>
                         <Button className="text-sm" onClick={()=>handleCurrentTemplate(template.subject, template.body)} size="sm">
                           Use
                         </Button>
                       </Link>
+                      <Button onClick={()=>handleDeleteTemplate(template.id)} className="flex w-fit text-red-500 h-full space-x-2 justify-start" variant={'ghost'}>
+                      <Trash2 className="h-6 w-6" />
+                      Delete
+                      </Button>
                     </CardFooter>
                   </Card>
                 ))}
