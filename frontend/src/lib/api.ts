@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import axios from 'axios';
 
 const BASE_URL='http://127.0.0.1:5000/api';
@@ -51,7 +50,3 @@ export const sendContacts= async (source:string, data: File)=>{
         return null;
     }
 }
-
-// http://127.0.0.1:5000/api/contacts
-// sending contacts file
-// returns {message and data}

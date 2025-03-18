@@ -31,6 +31,7 @@ export default function Dashboard() {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [recipients, setRecipients] = useState([]);
+  const [activeTab, setActiveTab]= useState<string>("compose");
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -207,7 +208,7 @@ export default function Dashboard() {
           <h1 className="text-lg font-medium">Compose Email</h1>
         </header>
         <main className="flex-1 overflow-auto p-6">
-          <Tabs defaultValue="compose" className="w-full">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
             <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="compose">Compose</TabsTrigger>
               <TabsTrigger value="recipients">Recipients</TabsTrigger>
@@ -314,7 +315,7 @@ Your Name`}
                       </DialogFooter>
                     </DialogContent>
                   </Dialog>
-                    <Button>Continue</Button> 
+                    <Button onClick={()=>{setActiveTab("recipients")}}>Continue</Button> 
                 </CardFooter>
               </Card>
             </TabsContent>
@@ -454,7 +455,7 @@ Your Name`}
                   <div className="mt-4 text-sm text-muted-foreground">Showing first {recipients.length>30?30:recipients.length} recipients</div>
                 </CardContent>
                 <CardContent className="flex justify-end">
-                  <Button>Continue to Preview & Send</Button>
+                  <Button onClick={()=>{if(recipients.length>0){setActiveTab("preview")} else {toast.error("Please add some contacts first")}}}>Continue to Preview & Send</Button>
                 </CardContent>
               </Card>
             </TabsContent>
