@@ -50,3 +50,14 @@ export const sendContacts= async (source:string, data: File)=>{
         return null;
     }
 }
+
+export const sendEmail= async(source:string, data: Record<string, unknown>)=>{
+    const url=`${BASE_URL}/${source}`;
+    try{
+        const response=await axios.post(url, data);
+        return response.data;
+    } catch(error){
+        console.error("Error sending email: ", error);
+        return null;
+    }
+}
