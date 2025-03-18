@@ -103,10 +103,9 @@ def handleCSV():
         if os.path.exists(filepath):
             os.remove(filepath)
 
-    # try:
-    #     db, cursor=get_db()
-        # have to handle file of CSV into pandas and numpy bla bla bla, so will send to another function in backend, which will check
-        # if the file is valid or not, if valid then will save the contact data in database
+@app.route("/api/send_email", methods=["POST"])
+def send_email():
+    pass
 
 
 if __name__ == "__main__":
