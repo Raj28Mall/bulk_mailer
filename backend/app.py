@@ -94,9 +94,9 @@ def handleCSV():
 
     try:
         contact_data= getContacts(filepath)
-        # if not contact_data.message:
-        #     return jsonify(contact_data), 400
-        return jsonify({'message':'true'}, {'contacts': contact_data}), 200
+        if contact_data.get('message')=='false':
+            return jsonify(contact_data), 400
+        return jsonify(contact_data)
     except Exception as e:
         return jsonify({'message':'false', 'error':str(e)}), 400
     finally:

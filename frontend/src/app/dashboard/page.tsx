@@ -47,13 +47,18 @@ export default function Dashboard() {
     setIsUploading(true);
     const selectedFile = file;
     const response=await sendContacts("contacts", selectedFile);
-    if(response[0].message==='true'){
-      setRecipients(response[1].contacts);
+    console.log(response);
+    if(response.message==='true'){
+      setRecipients(response.contacts);
       console.log(recipients);
-      setIsUploading(false)
-      setUploadSuccess(true)
+      setIsUploading(false);
+      setUploadSuccess(true);
     }
-  }
+    else{
+      setIsUploading(false);
+      toast.error(`Error uploading file: ${response.error}`);
+    }
+  };
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault()
