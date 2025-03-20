@@ -5,9 +5,7 @@ import { Button } from "@/components/ui/button"
 import { useLogStore } from "@/store/userStore"
 
 export default function Home() {
-
-  const loggedIn=useLogStore(state=>state.loggedIn);
-
+  const loggedIn = useLogStore((state) => state.loggedIn);
   return (
     <div className="flex min-h-screen flex-col">
       <header className="border-b">

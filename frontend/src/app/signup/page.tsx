@@ -10,9 +10,9 @@ export default function SignUp() {
   const [acceptedTerms, setAcceptedTerms] = useState(false)
 
   const handleGoogleSignUp = () => {
-    if (!acceptedTerms) return
+    if (!acceptedTerms) return;
 
-    setIsLoading(true)
+    setIsLoading(true);
   }
 
   return (

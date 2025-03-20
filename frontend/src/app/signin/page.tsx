@@ -8,22 +8,17 @@ import { useLogStore } from "@/store/userStore"
 
 export default function SignIn() {
   const [isLoading, setIsLoading] = useState(false);
-  const loggedIn=useLogStore(state=>state.loggedIn);
-  const setLoggedIn=useLogStore(state=>state.setLoggedIn);
+  const setLoggedIn = useLogStore((state) => state.setLoggedIn);
 
   const handleGoogleSignIn =async () => {
     setIsLoading(true);
     try{
       const response=await userWelcome();
-      console.log("BRUH");
-      console.log(response);
       setIsLoading(false);
-      if(response.message=="true"){
-        setLoggedIn(true);
-        console.log(loggedIn);
-        console.log("Now gonna redirect you to landing page");
-        console.log(response);
-        window.location.href="/";
+      if(response.success.trim()=='true'){
+        setLoggedIn(true); 
+        console.log("Now rerouting to dashboard");
+        setTimeout(()=>window.location.href="/", 10000);
       }
     } catch(error){
       console.log("This is in signin page: ", error);
