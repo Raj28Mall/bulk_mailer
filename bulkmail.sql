@@ -1,8 +1,7 @@
 USE bulkmail_db;
 
 CREATE TABLE users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    sub VARCHAR(255) UNIQUE NOT NULL,
+    id VARCHAR(30) PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     name VARCHAR(255) NOT NULL,
     picture TEXT
@@ -10,7 +9,7 @@ CREATE TABLE users (
 
 CREATE TABLE templates(
 	id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT, 
+    user_id VARCHAR(30), 
     subject VARCHAR(255),
     name VARCHAR(255) NOT NULL,
     body TEXT, 
@@ -20,7 +19,7 @@ CREATE TABLE templates(
 
 CREATE TABLE recipients(
 	id INT AUTO_INCREMENT PRIMARY KEY, 
-    user_id INT, 
+    user_id VARCHAR(30), 
     name VARCHAR(255),
     email VARCHAR(255) NOT NULL,
     description TEXT,
@@ -28,19 +27,25 @@ CREATE TABLE recipients(
     FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
-
-INSERT INTO users (sub, email, name, picture) 
-VALUES ('abcdefgh', 'rajmall.0206@gmail.com', 'Raj Mall', 'rajukaju');
-
-SELECT * FROM templates;
-DELETE FROM templates WHERE id=2;
-TRUNCATE TABLE templates;
+DROP TABLE users;
 DROP TABLE templates;
+DROP TABLE recipients;
+
+DESC users;
+DESC templates;
+DESC recipients;
+
+SELECT * FROM users;
+SELECT * FROM templates;
+SELECT * FROM recipients;
+
+SHOW PROCESSLIST;
 
 SHOW WARNINGS;
 DESC templates;
 
-
+INSERT INTO users(id, email, name, picture)
+VALUES("112911780107614691908", "anamikameghrag@gmail.com", 'Anamika Meghrag', 'https://lh3.googleusercontent.com/a/ACg8ocKndWeLYj3YTyV_38yW6_0mCmA7Tu9MkeiTv2-ag4YZI8QdCQ=s96-c');
 
 
 

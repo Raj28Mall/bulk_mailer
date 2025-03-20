@@ -2,8 +2,8 @@ import axios from 'axios';
 
 const BASE_URL='http://127.0.0.1:5000/api';
 
-export const sendData = async (source: string, data: Record<string, unknown>) => {
-    const url=`${BASE_URL}/${source}`;
+export const sendTemplate = async (data: Record<string, unknown>) => {
+    const url=`${BASE_URL}/email_template`;
     try{
         await axios.post(url, data, {
             headers:{
@@ -15,8 +15,8 @@ export const sendData = async (source: string, data: Record<string, unknown>) =>
     }
   };
 
-export const fetchData= async(source: string)=>{
-    const url=`${BASE_URL}/${source}`;
+export const fetchTemplate= async()=>{
+    const url=`${BASE_URL}/email_template`;
     try{
         const response=await axios.get(url);
         return response.data;
@@ -26,8 +26,8 @@ export const fetchData= async(source: string)=>{
     }
 };
 
-export const deleteData= async(source: string, id: number)=>{
-    const url=`${BASE_URL}/${source}/${id}`;
+export const deleteTemplate= async(id: number)=>{
+    const url=`${BASE_URL}/email_template/${id}`;
     console.log(url);
     try{
         const response=await axios.delete(url);
@@ -51,13 +51,6 @@ export const sendContacts= async (source:string, data: File)=>{
     }
 }
 
-export const sendEmail= async(source:string, data: Record<string, unknown>)=>{
-    const url=`${BASE_URL}/${source}`;
-    try{
-        const response=await axios.post(url, data);
-        return response.data;
-    } catch(error){
-        console.error("Error sending email: ", error);
-        return null;
-    }
+export const userWelcome= async(source:string, data)=>{
+
 }

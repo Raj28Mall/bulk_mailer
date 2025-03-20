@@ -16,7 +16,6 @@ def authenticate():
     )
     creds = flow.run_local_server(port=5005)
 
-    # Save credentials for later use
     with open("token.pickle", "wb") as token_file:
         pickle.dump(creds, token_file)
 
@@ -27,13 +26,14 @@ def authenticate():
     headers={"Authorization": f"Bearer {creds.token}"}
     )
 
-    print("Raw Response:", response.text) 
-    print("Status Code:", response.status_code)  
-
-    user_info = response.json()
-    print("Parsed User Info:", user_info)
+    raw_user_info=response.json()
+    user_info={}
+    user_info["id"]=raw_user_info["id"]
+    user_info["name"]=raw_user_info["name"]
+    user_info["email"]=raw_user_info["email"]
+    user_info["picture"]=raw_user_info["picture"]
+    return user_info
 
 
 if __name__ == "__main__":
     user_data = authenticate()
-    # print(f"Signed in as: {user_data['name']} ({user_data['email']})")

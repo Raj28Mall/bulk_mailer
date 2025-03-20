@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import Link from "next/link"
-import { fetchData, sendData, sendContacts } from "@/lib/api";
+import { fetchTemplate, sendTemplate, sendContacts } from "@/lib/api";
 import toast from 'react-hot-toast';
 import { useEffect, useState } from "react";
 import { Mail, User, FileText, Settings, LogOut, Save, FileDown, Upload, Download, AlertCircle, Check, FileUp, X } from "lucide-react"
@@ -9,12 +9,9 @@ import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose} from "@/components/ui/dialog"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSeparator,} from "@/components/ui/dropdown-menu"
 import { Textarea } from "@/components/ui/textarea"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
-import { Badge } from "@/components/ui/badge"
 import { Alert, AlertTitle, AlertDescription,  } from "@/components/ui/alert"
 import { useTemplateStore } from "@/store/templateStore";
 import { useSubjectStore, useBodyStore } from "@/store/emailStore"
@@ -97,7 +94,7 @@ export default function Dashboard() {
   };
   
   const fetchTemplates = async () => {
-    const data = await fetchData("email_template");
+    const data = await fetchTemplate();
     if (data) {
       setTemplates(data); 
     } else {
@@ -117,7 +114,7 @@ export default function Dashboard() {
   
     const template_data = { "subject": subject, "body": body, "name": templateName };
     try {
-      await sendData("email_template", template_data);
+      await sendTemplate(template_data);
       fetchTemplates();
       setSubject("");
       setBody("");

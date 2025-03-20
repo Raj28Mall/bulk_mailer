@@ -8,7 +8,7 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useTemplateStore } from "@/store/templateStore";
-import { fetchData, deleteData } from "@/lib/api";  
+import { fetchTemplate, deleteTemplate } from "@/lib/api";  
 import { useEffect } from 'react';
 import { useSubjectStore, useBodyStore } from "@/store/emailStore";
 import toast from "react-hot-toast";
@@ -34,10 +34,10 @@ export default function Templates() {
   const setBody = useBodyStore((state) => state.setBody);
   const rawTemplates= useTemplateStore((state)=>state.templates);
   const setTemplates = useTemplateStore((state) => state.setTemplates);
-  const deleteTemplate = useTemplateStore((state) => state.deleteTemplate);
+  const deleteZustandTemplate = useTemplateStore((state) => state.deleteTemplate);
 
   const fetchDBTemplate = async () => {
-    const data = await fetchData("email_template");
+    const data = await fetchTemplate();
     if (data) {
       setTemplates(data); 
     } else {
@@ -47,10 +47,9 @@ export default function Templates() {
 
   const deleteDBTemplate = async (id: number) => {
     try {
-      const response = await deleteData('email_template', id);
+      const response = await deleteTemplate(id);
       
       if (response && response.data && response.data.success) {  
-        deleteTemplate(id);
         toast.success("Template deleted successfully!", {
           duration: 2000,
           style: {
@@ -102,9 +101,8 @@ export default function Templates() {
   }));
 
   const handleDeleteTemplate = async (id: number) => {
-    console.log("Received id for template deletion: ",id);
     deleteDBTemplate(id);
-    deleteTemplate(id);
+    deleteZustandTemplate(id);
     await fetchDBTemplate();
   }
 

@@ -5,12 +5,13 @@ import uuid
 from dotenv import load_dotenv # type: ignore
 import mysql.connector # type: ignore
 from data import getContacts
+from auth import authenticate
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": r"http://localhost:\d+"}}, supports_credentials=True)
 load_dotenv()
 
-USER_ID=1
+USER_ID=112911780107614691908
 
 def get_db():
     """Get database connection (create one if not exists)."""
@@ -33,6 +34,15 @@ def close_db(exception):
         cursor.close()
     if db:
         db.close()
+
+@app.route("/api/auth", methods=["POST"])
+def welcome_user():
+    try:
+        user_data=authenticate()
+        print(user_data)
+    except Exception as e:
+        print(e)
+
 
 @app.route("/api/email_template", methods=['POST'])
 def save_template():
