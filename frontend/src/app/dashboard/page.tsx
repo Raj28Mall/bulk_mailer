@@ -44,7 +44,7 @@ export default function Dashboard() {
 
     setIsUploading(true);
     const selectedFile = file;
-    const response=await sendContacts("contacts", selectedFile);
+    const response=await sendContacts(selectedFile);
     console.log(response);
     if(response.message==='true'){
       setRecipients(response.contacts);

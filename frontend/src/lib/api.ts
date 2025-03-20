@@ -38,8 +38,8 @@ export const deleteTemplate= async(id: number)=>{
     }
 }
 
-export const sendContacts= async (source:string, data: File)=>{
-    const url=`${BASE_URL}/${source}`;
+export const sendContacts= async (data: File)=>{
+    const url=`${BASE_URL}/contacts`;
     const fileData=new FormData();
     fileData.append("file", data);
     try{
@@ -51,6 +51,6 @@ export const sendContacts= async (source:string, data: File)=>{
     }
 }
 
-export const userWelcome= async(source:string, data)=>{
+export const userWelcome= async()=>{
 
 }
