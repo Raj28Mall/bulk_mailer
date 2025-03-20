@@ -1,9 +1,13 @@
+"use client";
 import Link from "next/link"
 import { Mail, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { useLogStore } from "@/store/userStore"
 
 export default function Pricing() {
+  const loggedIn=useLogStore(state=>state.loggedIn);
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="border-b">
@@ -77,7 +81,7 @@ export default function Pricing() {
               </CardContent>
               <CardFooter>
                 <Button className="w-full" size="lg">
-                  <Link href="/signup" className="w-full">
+                  <Link href={loggedIn?"/dashboard":"/signup"} className="w-full">
                     Get Started for Free
                   </Link>
                 </Button>

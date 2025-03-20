@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link"
 import { Mail, CheckCircle, Clock, BarChart2, Calendar, FileText, Users, Edit, FileSpreadsheet, Database,} from "lucide-react"
 import { Button } from "@/components/ui/button"

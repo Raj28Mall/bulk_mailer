@@ -1,17 +1,24 @@
+"use client";
 import Link from "next/link"
 import { Mail } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { useLogStore } from "@/store/userStore"
 
 export default function Home() {
+
+  const loggedIn=useLogStore(state=>state.loggedIn);
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="border-b">
         <div className="container flex h-16 items-center px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2">
+            <Link href="/" className="flex items-center gap-2">
             <Mail className="h-6 w-6" />
             <span className="text-xl font-semibold">BulkMailer</span>
+            </Link>
           </div>
-          <div className="ml-auto flex items-center gap-4">
+          <div className={loggedIn?"hidden":"ml-auto flex items-center gap-4"}>
             <Link href="/signin">
               <Button variant="ghost">Sign In</Button>
             </Link>
@@ -32,7 +39,7 @@ export default function Home() {
             </p>
           </div>
           <div className="flex gap-4">
-            <Link href="/dashboard">
+            <Link href={loggedIn?"/dashboard":"signin"}>
               <Button size="lg">Get Started</Button>
             </Link>
             <Link href="/features">

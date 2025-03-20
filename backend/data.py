@@ -15,7 +15,7 @@ def is_valid_email(email):
 def getContacts(filepath):
     file= pd.read_csv(filepath, dtype=str)
     file.columns=file.columns.str.lower().str.strip()
-    file = file.map(sanitize_input)  # To protect against XSS and SQL injkections (ion know what that mean really)
+    file = file.map(sanitize_input)  # To protect against XSS and SQL injkections (ion know what that function is doing really)
 
     if file.isnull().values.any():
         return ({'message': 'false', "error": "Empty values detected"})

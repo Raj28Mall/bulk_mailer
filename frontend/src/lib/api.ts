@@ -52,5 +52,12 @@ export const sendContacts= async (data: File)=>{
 }
 
 export const userWelcome= async()=>{
-
+    const url=`${BASE_URL}/auth`;
+    try{
+        const response=await axios.post(url);
+        return response.data;
+    } catch(error){
+        console.error("Error entering user into db: ", error);
+        return null;
+    }
 }

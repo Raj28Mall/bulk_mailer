@@ -40,8 +40,24 @@ def welcome_user():
     try:
         user_data=authenticate()
         print(user_data)
+        db, cursor=get_db()
+        id=user_data.get("id")
+        name=user_data.get("name")
+        email=user_data.get("email")
+        picture=user_data.get("picture")
+        command="INSERT INTO users (id, name, email, picture) VALUES (%s, %s, %s, %s) ON DUPLICATE KEY UPDATE name=%s, email=%s, picture=%s"
+        values=(id, name, email, picture, name, email, picture)
+        cursor.execute(command, values)
+        db.commit()
+
+        global USER_ID
+        USER_ID=id
+
+        print("This is in app.py: ", user_data)
+        return jsonify({'success':'true'}), 200
     except Exception as e:
-        print(e)
+        print("Error while user tried to signin/signup: ",e)
+        return jsonify({'sucess':'false'}), 500
 
 
 @app.route("/api/email_template", methods=['POST'])
