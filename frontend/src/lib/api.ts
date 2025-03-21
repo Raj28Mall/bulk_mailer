@@ -28,10 +28,8 @@ export const fetchTemplate= async()=>{
 
 export const deleteTemplate= async(id: number)=>{
     const url=`${BASE_URL}/email_template/${id}`;
-    console.log(url);
     try{
         const response=await axios.delete(url);
-        console.log(response);
         return response;
     } catch(error){
         console.error("Error deleting data: ", error);

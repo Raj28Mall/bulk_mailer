@@ -1,38 +1,104 @@
 "use client";
 import Link from "next/link";
-import { Mail } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { useUserStore } from "@/store/userStore";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+import { Mail, Settings, LogOut, LayoutDashboard, HelpCircle, CreditCard } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu"
+import { useLogStore } from "@/store/logStore";
 import * as React from 'react';
 import { useState, useEffect } from 'react';
-
+import { useUserStore } from "@/store/userStore";
 
 export default function Home() {
-  const loggedIn = useUserStore((state) => state.loggedIn);
-  console.log("On page load: "+loggedIn);
-
-  useEffect(()=>{
-    console.log("On useEffect: "+loggedIn);
-  }, [loggedIn]);
+  const loggedIn = useLogStore((state) => state.loggedIn);
+  const setLoggedIn = useLogStore((state) => state.setLoggedIn);
+  const user=useUserStore((state)=>state.user);
 
   return (
     <div className="flex min-h-screen flex-col">
       <header className="border-b">
         <div className="container flex h-16 items-center px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-2">
-            <Link href="/" className="flex items-center gap-2">
             <Mail className="h-6 w-6" />
             <span className="text-xl font-semibold">BulkMailer</span>
-            </Link>
           </div>
-          <div className={loggedIn?"hidden":"ml-auto flex items-center gap-4"}>
-            <Link href="/signin">
-              <Button variant="ghost">Sign In</Button>
+          <nav className="ml-auto flex items-center gap-6">
+            <Link href="/features" className="text-sm font-medium text-muted-foreground hover:text-foreground">
+              Features
             </Link>
-            <Link href="/signup">
-              <Button>Sign Up</Button>
+            <Link href="/pricing" className="text-sm font-medium text-muted-foreground hover:text-foreground">
+              Pricing
             </Link>
-          </div>
+            <Link href="/contact" className="text-sm font-medium text-muted-foreground hover:text-foreground">
+              Contact
+            </Link>
+
+            {loggedIn ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" className="relative h-8 w-8 rounded-full">
+                    <Avatar className="h-8 w-8">
+                      <AvatarImage src={user.picture.replace("=s96-c", "=s400-c")} alt={user.name} />
+                      <AvatarFallback className="bg-primary/10 text-primary">
+                        {user.name
+                          .split(" ").map((n) => n[0]).join("")}
+                      </AvatarFallback>
+                    </Avatar>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent className="w-56" align="end" forceMount>
+                  <DropdownMenuLabel className="font-normal">
+                    <div className="flex flex-col space-y-1">
+                      <p className="text-sm font-medium leading-none">{user.name}</p>
+                      <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                    </div>
+                  </DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem>
+                      <LayoutDashboard className="mr-2 h-4 w-4" />
+                      <Link href="/dashboard" className="w-full">
+                        Dashboard
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <Settings className="mr-2 h-4 w-4" />
+                      <Link href="/dashboard/settings" className="w-full">
+                        Settings
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem>
+                      <CreditCard className="mr-2 h-4 w-4" />
+                      <Link href="/pricing" className="w-full">
+                        Billing
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <HelpCircle className="mr-2 h-4 w-4" />
+                    <Link href="/help" className="w-full">
+                      Help & Support
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem
+                    className="text-destructive focus:text-destructive cursor-pointer"
+                    onClick={() => setLoggedIn(false)}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    <span>Log out</span>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <div className="flex items-center gap-4">
+                <Link href="/signin">
+                  <Button >Sign In</Button>
+                </Link>
+              </div>
+            )}
+          </nav>
         </div>
       </header>
       <main className="flex-1 px-12">

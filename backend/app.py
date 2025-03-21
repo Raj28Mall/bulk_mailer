@@ -53,8 +53,7 @@ def welcome_user():
         global USER_ID
         USER_ID=id
 
-        print("This is in app.py: ", user_data)
-        return jsonify({'success':'true'}), 200
+        return jsonify({'success':'true', 'user_data':user_data}), 200
     except Exception as e:
         print("Error while user tried to signin/signup: ",e)
         return jsonify({'sucess':'false'}), 500

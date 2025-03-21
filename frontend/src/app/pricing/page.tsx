@@ -3,10 +3,10 @@ import Link from "next/link"
 import { Mail, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { useUserStore } from "@/store/userStore"
+import { useLogStore } from "@/store/logStore"
 
 export default function Pricing() {
-  const loggedIn=useUserStore(state=>state.loggedIn);
+  const loggedIn=useLogStore(state=>state.loggedIn);
 
   return (
     <div className="flex min-h-screen flex-col">

@@ -5,13 +5,15 @@ import { Mail } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { userWelcome } from "@/lib/api";
 import { useRouter } from "next/navigation";
+import { useLogStore } from "@/store/logStore";
 import { useUserStore } from "@/store/userStore";
 
 export default function SignIn() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [isRedirecting, setIsRedirecting] = useState(false);
-  const setLoggedIn = useUserStore((state) => state.setLoggedIn);
+  const setLoggedIn = useLogStore((state) => state.setLoggedIn);
+  const setUser = useUserStore((state) => state.setUser);
 
   const handleGoogleSignIn= async () => {
     setIsLoading(true);
@@ -19,20 +21,17 @@ export default function SignIn() {
       const response=await userWelcome();
       if(response.success.trim()=='true'){
         setLoggedIn(true); 
+        setUser(response.user_data);
         setIsLoading(false);
         setIsRedirecting(true);
         setTimeout(()=>{
           router.push('/');
-        }, 5000);
+        }, 2000);
       }
     } catch(error){
       console.log("This is in signin page: ", error);
     }
 }
-
-  const handleGoogleSignInn= ()=>{
-    setLoggedIn(false);
-  }
 
   return (
     <div className="flex min-h-screen flex-col">
