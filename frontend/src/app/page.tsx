@@ -84,7 +84,7 @@ export default function Home() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     className="text-destructive focus:text-destructive cursor-pointer"
-                    onClick={() => setLoggedIn(false)}
+                    onClick={() =>{setLoggedIn(false); window.location.href='/';}}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>

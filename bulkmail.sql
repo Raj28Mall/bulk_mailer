@@ -36,7 +36,8 @@ DESC templates;
 DESC recipients;
 
 SELECT * FROM users;
-SELECT * FROM templates;
+SELECT * FROM templates WHERE user_id=112911780107614691908;
+DELETE FROM templates WHERE user_id=112911780107614691908 AND (id = 2 or id = 3);
 SELECT * FROM recipients;
 
 SHOW PROCESSLIST;
@@ -44,8 +45,6 @@ SHOW PROCESSLIST;
 SHOW WARNINGS;
 DESC templates;
 
-INSERT INTO users(id, email, name, picture)
-VALUES("112911780107614691908", "anamikameghrag@gmail.com", 'Anamika Meghrag', 'https://lh3.googleusercontent.com/a/ACg8ocKndWeLYj3YTyV_38yW6_0mCmA7Tu9MkeiTv2-ag4YZI8QdCQ=s96-c');
 
 
 
