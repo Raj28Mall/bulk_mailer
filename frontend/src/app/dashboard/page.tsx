@@ -15,7 +15,7 @@ import { Label } from "@/components/ui/label"
 import { Alert, AlertTitle, AlertDescription,  } from "@/components/ui/alert"
 import { useTemplateStore } from "@/store/templateStore";
 import { useSubjectStore, useBodyStore } from "@/store/emailStore"
-import { useLogStore } from "@/store/userStore";
+import { useUserStore } from "@/store/userStore";
 
 export default function Dashboard() {
   const [templateName, setTemplateName]= useState("");
@@ -30,8 +30,8 @@ export default function Dashboard() {
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [recipients, setRecipients] = useState([]);
   const [activeTab, setActiveTab]= useState<string>("compose");
-  const loggedIn=useLogStore((state)=>state.loggedIn);
-  const setLoggedIn=useLogStore((state)=>state.setLoggedIn);
+  const loggedIn=useUserStore((state)=>state.loggedIn);
+  const setLoggedIn=useUserStore((state)=>state.setLoggedIn);
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];

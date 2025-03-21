@@ -1,29 +1,38 @@
-"use client"
-import { useState } from "react"
-import Link from "next/link"
-import { Mail } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { userWelcome } from "@/lib/api"
-import { useLogStore } from "@/store/userStore"
+"use client";
+import { useState } from "react";
+import Link from "next/link";
+import { Mail } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { userWelcome } from "@/lib/api";
+import { useRouter } from "next/navigation";
+import { useUserStore } from "@/store/userStore";
 
 export default function SignIn() {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  const setLoggedIn = useLogStore((state) => state.setLoggedIn);
+  const [isRedirecting, setIsRedirecting] = useState(false);
+  const setLoggedIn = useUserStore((state) => state.setLoggedIn);
 
-  const handleGoogleSignIn =async () => {
+  const handleGoogleSignIn= async () => {
     setIsLoading(true);
     try{
       const response=await userWelcome();
-      setIsLoading(false);
       if(response.success.trim()=='true'){
         setLoggedIn(true); 
-        console.log("Now rerouting to dashboard");
-        setTimeout(()=>window.location.href="/", 10000);
+        setIsLoading(false);
+        setIsRedirecting(true);
+        setTimeout(()=>{
+          router.push('/');
+        }, 5000);
       }
     } catch(error){
       console.log("This is in signin page: ", error);
     }
 }
+
+  const handleGoogleSignInn= ()=>{
+    setLoggedIn(false);
+  }
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -66,7 +75,7 @@ export default function SignIn() {
                 />
               </svg>
             </div>
-            <span>{isLoading ? "Signing in..." : "Continue with Google"}</span>
+            <span>{isLoading ? "Signing in..." : isRedirecting? "Redirecting to Home Page..." : "Continue with Google"}</span>
           </Button>
 
           <div className="text-center text-sm">

@@ -1,11 +1,20 @@
 "use client";
-import Link from "next/link"
-import { Mail } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { useLogStore } from "@/store/userStore"
+import Link from "next/link";
+import { Mail } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useUserStore } from "@/store/userStore";
+import * as React from 'react';
+import { useState, useEffect } from 'react';
+
 
 export default function Home() {
-  const loggedIn = useLogStore((state) => state.loggedIn);
+  const loggedIn = useUserStore((state) => state.loggedIn);
+  console.log("On page load: "+loggedIn);
+
+  useEffect(()=>{
+    console.log("On useEffect: "+loggedIn);
+  }, [loggedIn]);
+
   return (
     <div className="flex min-h-screen flex-col">
       <header className="border-b">
