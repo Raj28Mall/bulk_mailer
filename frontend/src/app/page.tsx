@@ -5,8 +5,6 @@ import { Mail, Settings, LogOut, LayoutDashboard, HelpCircle, CreditCard } from 
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu"
 import { useLogStore } from "@/store/logStore";
-import * as React from 'react';
-import { useState, useEffect } from 'react';
 import { useUserStore } from "@/store/userStore";
 
 export default function Home() {

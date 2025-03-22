@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import Link from "next/link"
-import { fetchTemplate, sendTemplate, sendContacts } from "@/lib/api";
+import { fetchTemplate, sendTemplate, sendContacts, sendTestMail, sendAllMail } from "@/lib/api";
 import toast from 'react-hot-toast';
 import { useEffect, useState } from "react";
 import { Mail, User, FileText, Settings, LogOut, Save, FileDown, Upload, Download, AlertCircle, Check, FileUp, X } from "lucide-react"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from "@/components/ui/card"
@@ -16,6 +17,7 @@ import { Alert, AlertTitle, AlertDescription,  } from "@/components/ui/alert"
 import { useTemplateStore } from "@/store/templateStore";
 import { useSubjectStore, useBodyStore } from "@/store/emailStore"
 import { useLogStore } from "@/store/logStore";
+import { useUserStore } from "@/store/userStore";
 
 export default function Dashboard() {
   const [templateName, setTemplateName]= useState("");
@@ -32,6 +34,40 @@ export default function Dashboard() {
   const [activeTab, setActiveTab]= useState<string>("compose");
   const loggedIn=useLogStore((state)=>state.loggedIn);
   const setLoggedIn=useLogStore((state)=>state.setLoggedIn);
+  const user=useUserStore((state)=>state.user);
+
+const testMail = async()=>{
+  if(!body){
+    toast.error("Please enter body");
+    return;
+  }
+  const response=await sendTestMail(subject, body, user.email);
+  if(response?.message=='true'){
+    toast.success("Test mail sent successfully");
+  }
+  else if(response?.message=='false'){
+    toast.error("Error sending test mail");
+  }
+}
+
+const allMail= async()=>{
+  if(!body){
+    toast.error("Please enter body");
+    return;
+  }
+  if(recipients.length==0){
+    toast.error("Please add some contacts first");
+    return;
+  }
+  const to_emails=recipients.map((recipient)=>recipient.email);
+  const response=await sendAllMail(subject, body, to_emails);
+  if(response?.message=='true'){
+    toast.success("Mails sent successfully");
+  }
+  else if(response?.message=='false'){
+    toast.error("Error sending mails");
+  }
+}
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0];
@@ -189,14 +225,20 @@ export default function Dashboard() {
         <div className="mt-auto border-t p-4">
           <div className="flex items-center gap-2 py-2">
             <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
-              <User className="h-4 w-4" />
+            <Avatar className="h-8 w-8">
+              <AvatarImage src={user.picture.replace("=s96-c", "=s400-c")} alt={user.name} />
+              <AvatarFallback className="bg-primary/10 text-primary">
+                {user.name
+                  .split(" ").map((n) => n[0]).join("")}
+              </AvatarFallback>
+            </Avatar>
             </div>
             <div>
-              <p className="text-sm font-medium">John Doe</p>
-              <p className="text-xs text-muted-foreground">john@example.com</p>
+              <p className="text-sm font-medium">{user.name}</p>
+              <p className="text-xs text-muted-foreground">{user.email}</p>
             </div>
           </div>
-          <Button variant="outline" size="sm" className="mt-2 w-full justify-start gap-2">
+          <Button onClick={()=>{setLoggedIn(false); window.location.href='/';}} variant="outline" size="sm" className="mt-2 w-full justify-start gap-2">
             <LogOut className="h-4 w-4" />
             Sign Out
           </Button>
@@ -472,10 +514,10 @@ Your Name`}
                     </div>
                   </div>
                   <div className="flex justify-end gap-4">
-                    <Button variant="outline">
+                    <Button onClick={testMail} variant="outline">
                       Send Test Email
                     </Button>
-                    <Button>Send to All Recipients</Button>
+                    <Button onClick={allMail}>Send to All Recipients</Button>
                   </div>
                 </CardContent>
               </Card>

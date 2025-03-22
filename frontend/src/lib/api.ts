@@ -59,3 +59,27 @@ export const userWelcome= async()=>{
         return null;
     }
 }
+
+export const sendTestMail= async(subject:string, body:string, recipient:string)=>{
+    const url=`${BASE_URL}/test_mail`;
+    const data={'subject':subject, 'body':body, 'to_email':recipient};
+    try{
+        const response=await axios.post(url, data);
+        return response.data;
+    } catch(error){
+        console.error("Error sending test mail: ", error);
+        return null;
+    }
+}
+
+export const sendAllMail= async(subject:string, body:string, recipients:string[])=>{
+    const url=`${BASE_URL}/all_mail`;
+    const data={'subject':subject, 'body':body, 'to_emails':recipients};
+    try{
+        const response=await axios.post(url, data);
+        return response.data;
+    } catch(error){
+        console.error("Error sending all mail: ", error);
+        return null;
+    }
+}

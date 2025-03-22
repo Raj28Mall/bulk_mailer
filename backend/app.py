@@ -6,6 +6,7 @@ from dotenv import load_dotenv # type: ignore
 import mysql.connector # type: ignore
 from data import getContacts
 from auth import authenticate
+from mail import send_test_email, send_all_email
 
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": r"http://localhost:\d+"}}, supports_credentials=True)
@@ -128,9 +129,37 @@ def handleCSV():
         if os.path.exists(filepath):
             os.remove(filepath)
 
-@app.route("/api/send_email", methods=["POST"])
-def send_email():
-    pass
+@app.route("/api/test_mail", methods=["POST"])
+def send_test():
+    try:
+        data=request.json
+        subject=data.get('subject')
+        body=data.get('body')
+        to_email=data.get('to_email')
+        if(send_test_email(to_email, subject, body)):
+            return jsonify({'message':'true'}), 200 
+        else:
+            return jsonify({'message':'false', 'error':'In sending test email'}), 400
+    except Exception as e:
+        return jsonify({'message':'false', 'error':str(e)}), 400
+
+@app.route("/api/all_mail", methods=["POST"])
+def send_all():
+    try:
+        data=request.json
+        subject=data.get('subject')
+        body=data.get('body')
+        to_emails=data.get('to_emails')
+
+        print(f"Received type in API: {type(data.get('to_emails'))}")
+        print(f"Received value in API: {data.get('to_emails')}")
+
+        if(send_all_email(to_emails, subject, body)):
+            return jsonify({'message':'true'}), 200 
+        else:
+            return jsonify({'message':'false', 'error':'In sending all emails'}), 400
+    except Exception as e:
+        return jsonify({'message':'false', 'error':str(e)}), 400
 
 
 if __name__ == "__main__":
