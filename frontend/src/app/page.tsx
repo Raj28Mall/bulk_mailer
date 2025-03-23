@@ -1,17 +1,31 @@
 "use client";
 import Link from "next/link";
+import { toast } from "react-hot-toast";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Mail, Settings, LogOut, LayoutDashboard, HelpCircle, CreditCard } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger, } from "@/components/ui/dropdown-menu"
 import { useLogStore } from "@/store/logStore";
 import { useUserStore } from "@/store/userStore";
+import { logOut } from "@/lib/api";
 
 export default function Home() {
   const loggedIn = useLogStore((state) => state.loggedIn);
   const setLoggedIn = useLogStore((state) => state.setLoggedIn);
   const user=useUserStore((state)=>state.user);
   const setUser=useUserStore((state)=>state.setUser);
+
+  const handleLogOut= async ()=>{
+    const response= await logOut();
+    if(response.message.trim()=='true'){
+      setLoggedIn(false);
+      setUser({name: "John Doe", email: "john_doe@gmail.com'", picture: ""});
+      window.location.href='/';
+    }
+    else{
+      toast.error("Error logging out, please try again later");
+    }
+  }
 
   console.log(user.picture.replace("=s96-c", "=s400-c"));
   return (
@@ -84,7 +98,7 @@ export default function Home() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     className="text-destructive focus:text-destructive cursor-pointer"
-                    onClick={() =>{setLoggedIn(false); setUser({name: "John Doe", email: "john.doe@gmail.com", picture: ""}); window.location.href='/';}}
+                    onClick={handleLogOut}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>

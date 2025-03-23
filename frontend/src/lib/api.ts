@@ -83,3 +83,14 @@ export const sendAllMail= async(subject:string, body:string, to_emails:string[],
         return null;
     }
 }
+
+export const logOut= async()=>{
+    const url=`${BASE_URL}/logout`;
+    try{
+        const response=await axios.post(url);
+        return response.data;
+    } catch(error){
+        console.error("Error logging out: ", error);
+        return null;
+    }
+}

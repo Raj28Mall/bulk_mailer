@@ -40,7 +40,6 @@ def close_db(exception):
 def welcome_user():
     try:
         user_data=authenticate()
-        print(user_data)
         db, cursor=get_db()
         id=user_data.get("id")
         name=user_data.get("name")
@@ -158,6 +157,14 @@ def send_all():
     except Exception as e:
         return jsonify({'message':'false', 'error':str(e)}), 400
 
+@app.route("/api/logout", methods=["POST"])
+def logout():
+    global USER_ID
+    USER_ID=None
+    token_path = 'token.pickle'
+    if os.path.exists(token_path):
+        os.remove(token_path)
+    return jsonify({'message':'true'}), 200
 
 if __name__ == "__main__":
     app.run(debug=True)
