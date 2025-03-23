@@ -43,9 +43,6 @@ export default function Home() {
             <Link href="/pricing" className="text-sm font-medium text-muted-foreground hover:text-foreground">
               Pricing
             </Link>
-            <Link href="/contact" className="text-sm font-medium text-muted-foreground hover:text-foreground">
-              Contact
-            </Link>
 
             {loggedIn ? (
               <DropdownMenu>
@@ -91,8 +88,8 @@ export default function Home() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem>
                     <HelpCircle className="mr-2 h-4 w-4" />
-                    <Link href="/help" className="w-full">
-                      Help & Support
+                    <Link href="/contact" className="w-full">
+                      Contact Us
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />

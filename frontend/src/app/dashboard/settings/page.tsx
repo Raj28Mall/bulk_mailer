@@ -65,10 +65,10 @@ export default function SettingsPage() {
         </header>
         <main className="flex-1 overflow-auto p-6">
           <Tabs defaultValue="account">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-2">
               <TabsTrigger value="account">Account</TabsTrigger>
               <TabsTrigger value="email">Email Settings</TabsTrigger>
-              <TabsTrigger value="notifications">Notifications</TabsTrigger>
+              {/* <TabsTrigger value="notifications">Notifications</TabsTrigger> */}
             </TabsList>
             <TabsContent value="account" className="space-y-6 pt-4">
               <Card>
@@ -200,21 +200,21 @@ export default function SettingsPage() {
                       <Label htmlFor="track-opens">Track Email Opens</Label>
                       <p className="text-sm text-muted-foreground">Get notified when recipients open your emails</p>
                     </div>
-                    <Switch id="track-opens" defaultChecked />
+                    <Switch id="track-opens"  />
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label htmlFor="track-clicks">Track Link Clicks</Label>
                       <p className="text-sm text-muted-foreground">Track when recipients click links in your emails</p>
                     </div>
-                    <Switch id="track-clicks" defaultChecked />
+                    <Switch id="track-clicks"  />
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="space-y-0.5">
                       <Label htmlFor="add-signature">Add Email Signature</Label>
                       <p className="text-sm text-muted-foreground">Automatically add your signature to all emails</p>
                     </div>
-                    <Switch id="add-signature" />
+                    <Switch id="add-signature" defaultChecked/>
                   </div>
                 </CardContent>
                 <CardFooter>
@@ -222,7 +222,7 @@ export default function SettingsPage() {
                 </CardFooter>
               </Card>
             </TabsContent>
-            <TabsContent value="notifications" className="space-y-6 pt-4">
+            {/* <TabsContent value="notifications" className="space-y-6 pt-4">
               <Card>
                 <CardHeader>
                   <CardTitle>Notification Preferences</CardTitle>
@@ -264,7 +264,7 @@ export default function SettingsPage() {
                   <Button>Save Notification Settings</Button>
                 </CardFooter>
               </Card>
-            </TabsContent>
+            </TabsContent> */}
           </Tabs>
         </main>
       </div>
