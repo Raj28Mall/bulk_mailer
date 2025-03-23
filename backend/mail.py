@@ -38,11 +38,11 @@ def send_all_email(subject, message_body, to_emails, to_names=None):
         names_provided=True
         if len(to_emails) != len(to_names):
             print("Number of names and emails do not match")
-            return
+            return False
 
     for i, to_email in enumerate(to_emails):
         if names_provided:
-            body=message_body.replace("[name]", to_names[i])
+            body=message_body.replace("[name]", (to_names[i].split(" "))[0])
         else:
             body=message_body
         message = MIMEText(body)
