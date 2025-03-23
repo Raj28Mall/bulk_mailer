@@ -1,20 +1,16 @@
 # bulk_mailer
 
+PRIORITIES:
+# bulk_mailer
 
 PRIORITIES:
-1. contacts page to contact the dev ( me hehehe )
-2. Compose page form validation
-3. Glitch sometimes showing me John doe ( default name and email )
-4. Sign up Page
-5. Sending test email
-6. Sending to all recipient
-8. Handling no subject
-7. Update settings page
-9. No description in contacts-> handle conditional rendering
-10. ATTACHMENT TO BODY
-
-
-
+1. Sign out on page close
+2. No description in contacts-> handle conditional rendering
+3. contacts page to contact the dev ( me hehehe )
+4. Update settings page
+5. Emails sent counter
+6. ATTACHMENT TO BODY
+7. Auth from backend to some on frontend for popup to close -> rajmall.0206 (Logout token handling)
 
 
 

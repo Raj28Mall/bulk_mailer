@@ -19,6 +19,12 @@ import { useSubjectStore, useBodyStore } from "@/store/emailStore"
 import { useLogStore } from "@/store/logStore";
 import { useUserStore } from "@/store/userStore";
 
+interface Recipient{
+  email:string;
+  name:string;
+  description?:string;
+}
+
 export default function Dashboard() {
   const [templateName, setTemplateName]= useState("");
   const templates = useTemplateStore((state) => state.templates);
@@ -30,11 +36,12 @@ export default function Dashboard() {
   const [file, setFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [recipients, setRecipients] = useState([]);
+  const [recipients, setRecipients] = useState<Recipient[]>([]);
   const [activeTab, setActiveTab]= useState<string>("compose");
   const loggedIn=useLogStore((state)=>state.loggedIn);
   const setLoggedIn=useLogStore((state)=>state.setLoggedIn);
   const user=useUserStore((state)=>state.user);
+  let subjectIgnore:number=0;
 
 const testMail = async()=>{
   if(!body){
@@ -59,8 +66,21 @@ const allMail= async()=>{
     toast.error("Please add some contacts first");
     return;
   }
+  if(!subject && subjectIgnore==0){
+    subjectIgnore++;
+    toast("No subject entered. Try again if you want to send without subject", {
+      icon: "ℹ️",
+      style: {
+        border: "1px solid #3498db",
+        padding: "8px",
+        color: "#3498db",
+      },
+    });
+    return;
+  }
   const to_emails=recipients.map((recipient)=>recipient.email);
-  const response=await sendAllMail(subject, body, to_emails);
+  const to_names = body.includes("[name]")? recipients.map((recipient) => recipient.name):undefined;
+  const response=await sendAllMail(subject, body, to_emails, to_names);
   if(response?.message=='true'){
     toast.success("Mails sent successfully");
   }

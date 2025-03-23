@@ -10,7 +10,7 @@ def load_credentials():
         creds = pickle.load(token_file)
     return creds
 
-def send_test_email(to_email, subject, message_body):
+def send_test_email(subject, message_body, to_email):
     creds = load_credentials()
     service = build("gmail", "v1", credentials=creds)
 
@@ -29,24 +29,23 @@ def send_test_email(to_email, subject, message_body):
         print(f"Error: {e}")
         return False
 
-def send_all_email(to_emails, subject, message_body):
+def send_all_email(subject, message_body, to_emails, to_names=None):
     success=True
     creds=load_credentials()
     service=build("gmail", "v1", credentials=creds)
+    names_provided=False
+    if to_names:
+        names_provided=True
+        if len(to_emails) != len(to_names):
+            print("Number of names and emails do not match")
+            return
 
-    print("These are recipient mails: ", to_emails)
-    print("This is subject: ", subject)
-    print("This is message body: ", message_body)
-
-    print(type(to_emails))  # Should print <class 'list'>
-    print(to_emails)  # Should print a list of email addresses
-
-    if isinstance(to_emails, str):
-        print("YEAH BUDDY")
-        to_emails = to_emails.split(",")  # Convert to list
-
-    for to_email in to_emails:
-        message = MIMEText(message_body)
+    for i, to_email in enumerate(to_emails):
+        if names_provided:
+            body=message_body.replace("[name]", to_names[i])
+        else:
+            body=message_body
+        message = MIMEText(body)
         message["subject"] = subject
         message["to"] = to_email
         raw_message = base64.urlsafe_b64encode(message.as_bytes()).decode()

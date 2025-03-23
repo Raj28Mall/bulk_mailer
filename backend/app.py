@@ -136,7 +136,7 @@ def send_test():
         subject=data.get('subject')
         body=data.get('body')
         to_email=data.get('to_email')
-        if(send_test_email(to_email, subject, body)):
+        if(send_test_email(subject, body, to_email)):
             return jsonify({'message':'true'}), 200 
         else:
             return jsonify({'message':'false', 'error':'In sending test email'}), 400
@@ -150,14 +150,11 @@ def send_all():
         subject=data.get('subject')
         body=data.get('body')
         to_emails=data.get('to_emails')
-
-        print(f"Received type in API: {type(data.get('to_emails'))}")
-        print(f"Received value in API: {data.get('to_emails')}")
-
-        if(send_all_email(to_emails, subject, body)):
-            return jsonify({'message':'true'}), 200 
+        to_names=data.get('to_names')
+        if send_all_email(subject, body, to_emails, *([to_names] if to_names else [])):
+            return jsonify({'message': 'true'}), 200
         else:
-            return jsonify({'message':'false', 'error':'In sending all emails'}), 400
+            return jsonify({'message': 'false', 'error': 'In sending all emails'}), 400
     except Exception as e:
         return jsonify({'message':'false', 'error':str(e)}), 400
 

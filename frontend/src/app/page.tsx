@@ -11,7 +11,9 @@ export default function Home() {
   const loggedIn = useLogStore((state) => state.loggedIn);
   const setLoggedIn = useLogStore((state) => state.setLoggedIn);
   const user=useUserStore((state)=>state.user);
+  const setUser=useUserStore((state)=>state.setUser);
 
+  console.log(user.picture.replace("=s96-c", "=s400-c"));
   return (
     <div className="flex min-h-screen flex-col">
       <header className="border-b">
@@ -82,7 +84,7 @@ export default function Home() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     className="text-destructive focus:text-destructive cursor-pointer"
-                    onClick={() =>{setLoggedIn(false); window.location.href='/';}}
+                    onClick={() =>{setLoggedIn(false); setUser({name: "John Doe", email: "john.doe@gmail.com", picture: ""}); window.location.href='/';}}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
                     <span>Log out</span>

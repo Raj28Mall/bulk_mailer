@@ -72,9 +72,9 @@ export const sendTestMail= async(subject:string, body:string, recipient:string)=
     }
 }
 
-export const sendAllMail= async(subject:string, body:string, recipients:string[])=>{
+export const sendAllMail= async(subject:string, body:string, to_emails:string[], to_names?:string[])=>{
     const url=`${BASE_URL}/all_mail`;
-    const data={'subject':subject, 'body':body, 'to_emails':recipients};
+    const data = { subject, body, to_emails, ...(to_names && { to_names }) };
     try{
         const response=await axios.post(url, data);
         return response.data;
