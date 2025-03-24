@@ -18,6 +18,7 @@ import { useTemplateStore } from "@/store/templateStore";
 import { useSubjectStore, useBodyStore } from "@/store/emailStore"
 import { useLogStore } from "@/store/logStore";
 import { useUserStore } from "@/store/userStore";
+import { handleLastEdited } from "@/lib/utils";
 
 interface Recipient{
   email:string;
@@ -27,7 +28,7 @@ interface Recipient{
 
 export default function Dashboard() {
   const [templateName, setTemplateName]= useState("");
-  const templates = useTemplateStore((state) => state.templates);
+  const templates:(number|string)[][] = useTemplateStore((state) => state.templates);
   const setTemplates = useTemplateStore((state) => state.setTemplates);
   const subject = useSubjectStore((state) => state.subject);
   const body = useBodyStore((state) => state.body);
@@ -195,22 +196,6 @@ const allMail= async()=>{
     }
   };
   
-  function handleLastEdited(dateString: string): string {
-    const date = new Date(dateString); 
-    date.setMinutes(date.getMinutes() - 330); //Adjusting for IST times from GMT tims
-  
-    const now = new Date();
-    const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
-  
-    if (diffInSeconds < 60) return "Just now";
-    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
-    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
-    if (diffInSeconds < 604800) return `${Math.floor(diffInSeconds / 86400)} days ago`;
-    if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 604800)} weeks ago`;
-    if (diffInSeconds < 31536000) return `${Math.floor(diffInSeconds / 2592000)} months ago`;
-  
-    return `${Math.floor(diffInSeconds / 31536000)} years ago`;
-  }
   return (
     <div className="flex min-h-screen">
       <div className="hidden w-64 flex-col border-r bg-muted/40 md:flex">

@@ -4,6 +4,7 @@ CREATE TABLE users (
     id VARCHAR(30) PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     name VARCHAR(255) NOT NULL,
+    -- company VARCHAR(255), 
     picture TEXT
 );
 
@@ -36,7 +37,7 @@ DESC templates;
 DESC recipients;
 
 SELECT * FROM users;
-SELECT * FROM templates WHERE user_id=112911780107614691908;
+SELECT * FROM templates;
 DELETE FROM templates WHERE user_id=112911780107614691908 AND (id = 2 or id = 3);
 SELECT * FROM recipients;
 
