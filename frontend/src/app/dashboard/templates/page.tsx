@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 "use client";
 import Link from "next/link"
+import toast from "react-hot-toast";
 import { Mail, User, FileText, Settings, LogOut, Plus, Search, Trash2, Edit2, Ghost } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
@@ -11,7 +12,7 @@ import { fetchTemplate, deleteTemplate } from "@/lib/api";
 import { useEffect } from 'react';
 import { useSubjectStore, useBodyStore } from "@/store/emailStore";
 import { handleLastEdited } from "@/lib/utils";
-import toast from "react-hot-toast";
+import { useLogStore } from "@/store/logStore";
 
 interface Template{
   id: number;
@@ -35,6 +36,12 @@ export default function Templates() {
   const rawTemplates= useTemplateStore((state)=>state.templates);
   const setTemplates = useTemplateStore((state) => state.setTemplates);
   const deleteZustandTemplate = useTemplateStore((state) => state.deleteTemplate);
+
+  const loggedIn=useLogStore((state)=>state.loggedIn);
+
+  if(!loggedIn){
+    window.location.href='/';
+  }
 
   const fetchDBTemplate = async () => {
     const data = await fetchTemplate();

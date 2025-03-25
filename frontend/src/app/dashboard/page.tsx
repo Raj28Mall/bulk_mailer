@@ -44,6 +44,10 @@ export default function Dashboard() {
   const user=useUserStore((state)=>state.user);
   let subjectIgnore:number=0;
 
+  if(!loggedIn){
+    window.location.href='/';
+  }
+
 const testMail = async()=>{
   if(!body){
     toast.error("Please enter body");

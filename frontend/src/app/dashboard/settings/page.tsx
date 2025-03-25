@@ -1,3 +1,4 @@
+"use client";
 import Link from "next/link"
 import { Mail, User, FileText, Settings, LogOut, Save } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -7,8 +8,14 @@ import { Label } from "@/components/ui/label"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { useLogStore } from "@/store/logStore"
 
 export default function SettingsPage() {
+  const loggedIn=useLogStore(state=>state.loggedIn);
+  if(!loggedIn){
+    window.location.href='/';
+  }
+
   return (
     <div className="flex min-h-screen">
       <div className="hidden w-64 flex-col border-r bg-muted/40 md:flex">
