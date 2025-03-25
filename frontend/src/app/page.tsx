@@ -26,8 +26,6 @@ export default function Home() {
       toast.error("Error logging out, please try again later");
     }
   }
-
-  console.log(user.picture.replace("=s96-c", "=s400-c"));
   return (
     <div className="flex min-h-screen flex-col">
       <header className="border-b">
@@ -49,7 +47,7 @@ export default function Home() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" className="relative h-8 w-8 rounded-full">
                     <Avatar className="h-8 w-8">
-                      <AvatarImage src={user.picture.replace("=s96-c", "=s400-c")} alt={user.name} />
+                      <AvatarImage src={user.picture? user.picture.replace("=s96-c", "=s400-c") : ""} alt="{user.name}" />
                       <AvatarFallback className="bg-primary/10 text-primary">
                         {user.name
                           .split(" ").map((n) => n[0]).join("")}

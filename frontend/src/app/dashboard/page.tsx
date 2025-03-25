@@ -28,7 +28,7 @@ interface Recipient{
 
 export default function Dashboard() {
   const [templateName, setTemplateName]= useState("");
-  const templates:(number|string)[][] = useTemplateStore((state) => state.templates);
+  const templates = useTemplateStore((state) => state.templates);
   const setTemplates = useTemplateStore((state) => state.setTemplates);
   const subject = useSubjectStore((state) => state.subject);
   const body = useBodyStore((state) => state.body);
