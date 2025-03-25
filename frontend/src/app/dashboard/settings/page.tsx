@@ -9,12 +9,15 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Switch } from "@/components/ui/switch"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useLogStore } from "@/store/logStore"
+import { useUserStore } from "@/store/userStore";
 
 export default function SettingsPage() {
   const loggedIn=useLogStore(state=>state.loggedIn);
   if(!loggedIn){
     window.location.href='/';
   }
+
+  const user=useUserStore(state=>state.user);
 
   return (
     <div className="flex min-h-screen">
@@ -56,8 +59,8 @@ export default function SettingsPage() {
               <User className="h-4 w-4" />
             </div>
             <div>
-              <p className="text-sm font-medium">John Doe</p>
-              <p className="text-xs text-muted-foreground">john@example.com</p>
+              <p className="text-sm font-medium">{user.name}</p>
+              <p className="text-xs text-muted-foreground">{user.email}</p>
             </div>
           </div>
           <Button variant="outline" size="sm" className="mt-2 w-full justify-start gap-2">
@@ -87,20 +90,20 @@ export default function SettingsPage() {
                   <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                     <div className="space-y-2">
                       <Label htmlFor="first-name">First Name</Label>
-                      <Input id="first-name" defaultValue="John" />
+                      <Input id="first-name" defaultValue={(user.name).split(" ")[0]}/>
                     </div>
                     <div className="space-y-2">
                       <Label htmlFor="last-name">Last Name</Label>
-                      <Input id="last-name" defaultValue="Doe" />
+                      <Input id="last-name" defaultValue={(user.name).split(" ")[1]}/>
                     </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" defaultValue="john@example.com" />
+                    <Input id="email" type="email" defaultValue={user.email} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="company">Company</Label>
-                    <Input id="company" defaultValue="Acme Inc" />
+                    <Input id="company" defaultValue="" />
                   </div>
                 </CardContent>
                 <CardFooter>
@@ -159,11 +162,11 @@ export default function SettingsPage() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="sender-email">Sender Email</Label>
-                    <Input id="sender-email" type="email" defaultValue="john@example.com" />
+                    <Input id="sender-email" type="email" defaultValue={user.email} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="sender-name">Sender Name</Label>
-                    <Input id="sender-name" defaultValue="John Doe" />
+                    <Input id="sender-name" defaultValue={user.name} />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="smtp-host">SMTP Host</Label>

@@ -82,7 +82,7 @@ export default function Features() {
                         <p>Dear [name],</p>
                         <br />
                         <p>
-                          Your custom report for [company] is now ready to view. We&apos;ve analyzed your data and prepared
+                          Your custom report is now ready to view. We&apos;ve analyzed your data and prepared
                           some insights that we think you&apos;ll find valuable.
                         </p>
                         <br />
@@ -105,22 +105,22 @@ export default function Features() {
                       <div className="grid grid-cols-12 border-b px-4 py-3 font-medium">
                         <div className="col-span-5">Email</div>
                         <div className="col-span-4">Name</div>
-                        <div className="col-span-3">Company</div>
+                        <div className="col-span-3">Description</div>
                       </div>
                       <div className="grid grid-cols-12 items-center border-b px-4 py-3">
                         <div className="col-span-5">john@example.com</div>
                         <div className="col-span-4">John Doe</div>
-                        <div className="col-span-3">Acme Inc</div>
+                        <div className="col-span-3">CEO</div>
                       </div>
                       <div className="grid grid-cols-12 items-center border-b px-4 py-3">
                         <div className="col-span-5">jane@example.com</div>
                         <div className="col-span-4">Jane Smith</div>
-                        <div className="col-span-3">XYZ Corp</div>
+                        <div className="col-span-3">CTO</div>
                       </div>
                       <div className="grid grid-cols-12 items-center px-4 py-3">
                         <div className="col-span-5">alex@example.com</div>
                         <div className="col-span-4">Alex Johnson</div>
-                        <div className="col-span-3">123 LLC</div>
+                        <div className="col-span-3">CFO</div>
                       </div>
                     </div>
                   </div>
